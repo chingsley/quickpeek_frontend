@@ -4,13 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 interface PermissionsState {
   notificationToken: string | null;
   locationSharingEnabled: boolean;
-  // location: { latitude: number; longitude: number; } | null;
+  permissionsLoaded: boolean;
 }
 
 const initialState: PermissionsState = {
   notificationToken: null,
-  // location: null,
   locationSharingEnabled: false,
+  permissionsLoaded: false,
 };
 
 // Async thunk to initialize location from AsyncStorage
@@ -30,6 +30,9 @@ const permissionsSlice = createSlice({
     },
     setLocationSharingEnabled(state: PermissionsState, action: PayloadAction<boolean>) {
       state.locationSharingEnabled = action.payload;
+    },
+    setPermissionsLoaded(state: PermissionsState, action: PayloadAction<boolean>) {
+      state.permissionsLoaded = action.payload;
     },
 
     // setLocation(state: PermissionsState, action: PayloadAction<{ latitude: number; longitude: number; } | null>) {
@@ -56,5 +59,5 @@ const permissionsSlice = createSlice({
   // },
 });
 
-export const { setNotificationToken, setLocationSharingEnabled } = permissionsSlice.actions;
+export const { setNotificationToken, setLocationSharingEnabled, setPermissionsLoaded } = permissionsSlice.actions;
 export default permissionsSlice.reducer;

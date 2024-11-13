@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import Constants from 'expo-constants';
-import { setNotificationToken, setLocationSharingEnabled } from '../store/slices/permissionsSlice';
+import { setNotificationToken, setLocationSharingEnabled, setPermissionsLoaded } from '../store/slices/permissionsSlice';
 
 const NOTIF_TOKEN_KEY = 'notificationToken';
 const LOCATION_PERMISSION_KEY = 'locationpermissionkey';
@@ -53,7 +53,12 @@ export const usePermissions = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
-    askLocationPermission();
-  }, [registerForPushNotificationsAsync, askLocationPermission]);
+    const initializePermissions = async () => {
+      await registerForPushNotificationsAsync();
+      await askLocationPermission();
+      dispatch(setPermissionsLoaded(true));
+    };
+
+    initializePermissions();
+  }, [registerForPushNotificationsAsync, askLocationPermission, dispatch]);
 };
