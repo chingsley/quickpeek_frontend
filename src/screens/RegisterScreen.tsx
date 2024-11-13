@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
@@ -13,6 +13,7 @@ export const RegisterScreen = () => {
   const navigation = useNavigation();
   const isLoading = useSelector((state: RootState) => state.loading.isLoading);
   const { notificationToken, locationSharingEnabled } = useSelector((state: RootState) => state.permissions);
+  console.log({ notificationToken, locationSharingEnabled });
   const [formData, setFormData] = useState({
     name: 'Kingsley Eneja',
     username: 'chingsley',
@@ -31,8 +32,18 @@ export const RegisterScreen = () => {
     });
   };
 
+  useEffect(() => {
+    // Update formData when notificationToken or locationSharingEnabled changes
+    setFormData(prevData => ({
+      ...prevData,
+      locationSharingEnabled,
+      notificationsEnabled: !!notificationToken,
+      deviceToken: notificationToken,
+    }));
+  }, [notificationToken, locationSharingEnabled]);
+
   const handleRegister = async () => {
-    console.log('\n\n Registration request payload ------->', notificationToken);
+    console.log('\n\n Registration request payload ------->', formData);
     try {
       const response = await registerUserService(formData);
       console.log('\n\n Registration response data ------> ', response);
