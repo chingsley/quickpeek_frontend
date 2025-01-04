@@ -11,9 +11,10 @@ export const QuestionCreationScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    title: 'Queue check',
+    title: `Queue check ${new Date()}`,
+    address: 'NNPC filling station katampe',
+    location: '-65.79952838533883, 46.44924450104387', // we'll get the coords location the user-entered address
     content: 'How long is the queue at NNPC filling station katampe?',
-    location: '-65.79952838533883, 46.44924450104387'
   });
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { isLoading } = useSelector((state: RootState) => state.loading);
@@ -24,7 +25,7 @@ export const QuestionCreationScreen = () => {
       [name]: value,
     });
   };
-  const clearForm = () => setFormData({ title: '', content: '', location: '' });
+  const clearForm = () => setFormData({ title: '', content: '', location: '', address: '' });
 
 
   const handleSubmit = async () => {
@@ -56,12 +57,19 @@ export const QuestionCreationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Ask a Question</Text>
+      <Text>title</Text>
       <TextInput
         style={styles.input}
         value={formData.title}
         onChangeText={(value) => handleChange('title', value)}
         placeholder="Enter question title"
+      />
+      <Text>address</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.address}
+        onChangeText={(value) => handleChange('address', value)}
+        placeholder=""
       />
       <Text>Content</Text>
       <TextInput
