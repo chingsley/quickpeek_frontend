@@ -5,6 +5,7 @@ import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import loadingReducer from './slices/loadingSlice';
 import permissionsReducer from './slices/permissionsSlice';
+import questionsReducer from './slices/questionSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     user: userReducer,
     loading: loadingReducer,
     permissions: permissionsReducer,
+    questions: questionsReducer,
   },
 });
 

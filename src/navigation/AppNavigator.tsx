@@ -6,6 +6,8 @@ import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { QuestionCreationScreen } from '../screens/QuestionCreationScreen';
+import { QuestionListScreen } from '../screens/QuestionListScreen';
+import { PostAnswerScreen } from '../screens/PostAnswerScreen';
 import { NavigationBar } from '../components'; // Import navigation bar
 
 
@@ -21,6 +23,9 @@ export default function AppNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="QuestionCreation" component={QuestionCreationScreen} />
+        <Stack.Screen name="QuestionList" component={QuestionListScreen} />
+        <Stack.Screen name="PostAnswer" component={PostAnswerScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

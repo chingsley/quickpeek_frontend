@@ -1,19 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UserType } from '../../types';
 
-interface UserState {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  deviceType: string;
-  deviceToken: string;
-  // locationSharingEnabled: boolean;
-  notificationsEnabled: boolean;
-  latitude?: number;
-  longitude?: number;
-}
+// interface UserState {
+//   id: string;
+//   name: string;
+//   username: string;
+//   email: string;
+//   deviceType: string;
+//   deviceToken: string;
+//   // locationSharingEnabled: boolean;
+//   notificationsEnabled: boolean;
+//   latitude?: number;
+//   longitude?: number;
+// }
 
-const initialState: UserState = {
+const initialState: UserType = {
   id: '',
   name: '',
   username: '',
@@ -28,7 +29,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    registerUser: (state, action: PayloadAction<UserState>) => {
+    registerUser: (state, action: PayloadAction<UserType>) => {
       return { ...state, ...action.payload };
     },
     updateUserLocation: (
