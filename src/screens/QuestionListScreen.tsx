@@ -28,28 +28,69 @@ export const QuestionListScreen = () => {
   }
 
   if (!pendingQuestions || pendingQuestions.length === 0) {
-    return <Text>Loading...</Text>;
+    return <Text style={styles.loadingText}>Loading...</Text>;
   }
 
   return (
-    <FlatList
-      data={pendingQuestions}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => handleQuestionSelect(item.id)} style={styles.questionContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.content}>{item.content}</Text>
-        </TouchableOpacity>
-      )}
-      style={styles.list}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={pendingQuestions}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => handleQuestionSelect(item.id)}
+            style={styles.questionContainer}
+          >
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.content}>{item.content}</Text>
+          </TouchableOpacity>
+        )}
+        style={styles.list}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  list: { padding: 10, },
-  questionContainer: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#ddd' },
-  title: { fontWeight: 'bold', fontSize: 16 },
-  content: { color: '#555' },
+  container: {
+    flex: 1,
+    marginTop: 50, // Adjust this value as needed to clear your hamburger menu
+    borderWidth: 1, // Red border for development debugging
+    borderColor: 'red',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1, // Red border for development debugging
+    borderColor: 'red',
+  },
+  loadingText: {
+    marginTop: 50,
+    textAlign: 'center',
+    borderWidth: 1, // Red border for development debugging
+    borderColor: 'red',
+  },
+  list: {
+    padding: 10,
+    borderWidth: 1, // Red border for development debugging
+    borderColor: 'red',
+  },
+  questionContainer: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    borderWidth: 1, // Red border for development debugging
+    borderColor: 'red',
+    marginBottom: 10, // Optional: adds space between items for clarity
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  content: {
+    color: '#555',
+  },
 });
+
+export default QuestionListScreen;
