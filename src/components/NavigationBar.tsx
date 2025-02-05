@@ -60,6 +60,12 @@ const NavigationBar = () => {
           <TouchableOpacity onPress={() => navigateTo('QuestionCreation')}>
             <Text style={styles.navItem}>Ask Question</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigateTo('QuestionList')}>
+            <Text style={styles.navItem}>Question List</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigateTo('PostAnswer')}>
+            <Text style={styles.navItem}>Respond to Question</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <>
@@ -90,6 +96,12 @@ const NavigationBar = () => {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigateTo('QuestionCreation')}>
               <Text style={styles.menuItem}>Ask Question</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigateTo('QuestionList')}>
+              <Text style={styles.menuItem}>Question List</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigateTo('PostAnswer')}>
+              <Text style={styles.menuItem}>Respond to Question</Text>
             </TouchableOpacity>
           </Animated.View>
         </>

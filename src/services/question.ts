@@ -8,3 +8,12 @@ export const postQuestion = async (payload: any) => {
     throw error;
   }
 };
+
+export const getPendingQuestions = async (questionIds: string[]) => {
+  try {
+    const response = await axios.get(`/questions/pending?questionIds=${questionIds.join(',')}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
