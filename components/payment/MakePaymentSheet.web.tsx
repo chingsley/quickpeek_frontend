@@ -2,10 +2,12 @@ import PaystackWebView from '@/components/payment/PaystackWebView';
 import {
   initiationErrorMessage,
   makePaymentSheetStyles as styles,
+  makePaymentSlideLabel,
   MakePaymentSheetProps,
+  PAYMENT_SUCCESS_DISPLAY_MS,
 } from '@/components/payment/makePaymentSheet.shared';
 import BottomSheet from '@/components/shared/BottomSheet';
-import CustomButton from '@/components/shared/CustomButton';
+import SlideToConfirmButton from '@/components/shared/SlideToConfirmButton';
 import { payForRequest, verifyPayment } from '@/services/payments.services';
 import { formatMoney } from '@/utils/payment.utils';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -27,6 +29,8 @@ const MakePaymentSheet = ({
   onPaid,
 }: MakePaymentSheetProps) => {
   const [processing, setProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [slideResetKey, setSlideResetKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [paystackCheckout, setPaystackCheckout] = useState<{
     url: string;
@@ -36,13 +40,22 @@ const MakePaymentSheet = ({
   useEffect(() => {
     if (visible) {
       setProcessing(false);
+      setPaymentSuccess(false);
       setError(null);
+      setSlideResetKey((key) => key + 1);
     }
   }, [visible]);
+
+  const resetSlide = useCallback(() => {
+    setSlideResetKey((key) => key + 1);
+  }, []);
 
   const finishPayment = useCallback(
     async (transactionId: string) => {
       const confirmed = await verifyPayment(transactionId);
+      setProcessing(false);
+      setPaymentSuccess(true);
+      await new Promise((resolve) => setTimeout(resolve, PAYMENT_SUCCESS_DISPLAY_MS));
       onPaid?.(confirmed);
       onClose();
     },
@@ -58,6 +71,7 @@ const MakePaymentSheet = ({
       if (payResponse.stripe) {
         setError(STRIPE_WEB_MESSAGE);
         setProcessing(false);
+        resetSlide();
         return;
       }
 
@@ -66,25 +80,30 @@ const MakePaymentSheet = ({
           url: payResponse.paystack.authorizationUrl,
           transactionId: payResponse.transaction.id,
         });
-        setProcessing(false);
         return;
       }
 
       setError('Unexpected payment response. Please try again.');
       setProcessing(false);
+      resetSlide();
     } catch (err) {
       setError(initiationErrorMessage(err));
       setProcessing(false);
+      resetSlide();
     }
-  }, [answerRequestId]);
+  }, [answerRequestId, resetSlide]);
 
   const handlePaystackComplete = useCallback(() => {
     const checkout = paystackCheckout!;
     setPaystackCheckout(null);
+    setProcessing(true);
     finishPayment(checkout.transactionId).catch(() => {
+      setPaymentSuccess(false);
+      setProcessing(false);
+      resetSlide();
       setError('Could not confirm the payment yet. Check your wallet shortly.');
     });
-  }, [finishPayment, paystackCheckout]);
+  }, [finishPayment, paystackCheckout, resetSlide]);
 
   return (
     <BottomSheet visible={visible} onClose={onClose}>
@@ -98,11 +117,12 @@ const MakePaymentSheet = ({
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <CustomButton
-          text={`Pay ${formatMoney(amount, currency)}`}
-          onPress={handleConfirm}
+        <SlideToConfirmButton
+          label={makePaymentSlideLabel(amount, currency)}
+          onConfirm={handleConfirm}
           loading={processing}
-          noTopMargin
+          success={paymentSuccess}
+          resetKey={slideResetKey}
         />
       </View>
 
@@ -110,7 +130,11 @@ const MakePaymentSheet = ({
         <PaystackWebView
           authorizationUrl={paystackCheckout.url}
           onComplete={handlePaystackComplete}
-          onCancel={() => setPaystackCheckout(null)}
+          onCancel={() => {
+            setPaystackCheckout(null);
+            setProcessing(false);
+            resetSlide();
+          }}
         />
       ) : null}
     </BottomSheet>

@@ -205,15 +205,15 @@ const styles = StyleSheet.create({
   },
   quoteName: {
     fontFamily: 'roboto-medium',
-    fontSize: 11,
+    fontSize: 12,
     color: colors.PRIMARY,
     marginBottom: 2,
   },
   quoteText: {
     fontFamily: 'roboto',
-    fontSize: 12,
+    fontSize: 13,
     color: colors.MEDIUM_GRAY,
   },
   messageText: { fontFamily: 'roboto', fontSize: fonts.FONT_SIZE_SMALL, color: colors.TEXT_DARK, lineHeight: 20 },
-  messageTime: { fontFamily: 'roboto', fontSize: 10, color: colors.MEDIUM_GRAY, marginTop: 4, alignSelf: 'flex-end' },
+  messageTime: { fontFamily: 'roboto', fontSize: 11, color: colors.MEDIUM_GRAY, marginTop: 4, alignSelf: 'flex-end' },
 });

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   textInput: {
     ...drawBorder(),
     color: colors.TEXT_BODY,
-    fontSize: 18,
+    fontSize: 19,
     backgroundColor: colors.INPUT_BG,
     borderRadius: BORDER_RADIUS_INPUT,
     paddingHorizontal: 10,

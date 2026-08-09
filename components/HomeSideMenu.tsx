@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontFamily: 'roboto-bold',
-    fontSize: 28,
+    fontSize: 29,
     color: colors.TEXT_DARK,
   },
   menuItems: {

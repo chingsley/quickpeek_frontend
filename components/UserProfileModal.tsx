@@ -385,12 +385,12 @@ const styles = StyleSheet.create({
   reviewHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
   reviewRaterRole: {
     fontFamily: 'roboto-medium',
-    fontSize: 10,
+    fontSize: 11,
     color: colors.MEDIUM_GRAY,
     textTransform: 'uppercase',
     marginTop: 2,
   },
-  reviewDate: { fontFamily: 'roboto', fontSize: 10, color: colors.PRIMARY, marginLeft: 'auto' },
+  reviewDate: { fontFamily: 'roboto', fontSize: 11, color: colors.PRIMARY, marginLeft: 'auto' },
   reviewComment: { fontFamily: 'roboto', fontSize: fonts.FONT_SIZE_SMALL, color: colors.TEXT_DARK, lineHeight: 20 },
   reviewNoComment: { fontFamily: 'roboto', fontSize: fonts.FONT_SIZE_XS, color: colors.MEDIUM_GRAY, fontStyle: 'italic' },
   reviewAttribution: {

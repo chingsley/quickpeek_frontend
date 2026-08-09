@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
     gap: 8,
     minWidth: 40,
   },
-  time: { fontFamily: 'roboto', fontSize: 11, color: colors.PRIMARY },
+  time: { fontFamily: 'roboto', fontSize: 12, color: colors.PRIMARY },
   unreadBadge: {
     minWidth: 18,
     height: 18,
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  unreadBadgeText: { color: colors.BG_WHITE, fontSize: 10, fontWeight: 'bold' },
+  unreadBadgeText: { color: colors.BG_WHITE, fontSize: 11, fontWeight: 'bold' },
   centered: {
     flex: 1,
     alignItems: 'center',

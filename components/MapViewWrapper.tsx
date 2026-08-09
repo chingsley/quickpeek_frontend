@@ -40,12 +40,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 16,
+    fontSize: 17,
     color: colors.MEDIUM_GRAY,
     fontFamily: 'roboto',
   },
   coords: {
-    fontSize: 12,
+    fontSize: 13,
     color: colors.MEDIUM_GRAY,
     marginTop: 8,
     fontFamily: 'roboto',

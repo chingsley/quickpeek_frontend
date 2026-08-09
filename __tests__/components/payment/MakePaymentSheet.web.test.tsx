@@ -30,6 +30,28 @@ jest.mock('@/components/payment/PaystackWebView', () => {
   };
 });
 
+jest.mock('@/components/shared/SlideToConfirmButton', () => {
+  const React = require('react');
+  const { Pressable, Text } = require('react-native');
+  return {
+    __esModule: true,
+    default: ({
+      label,
+      onConfirm,
+      testID,
+    }: {
+      label: string;
+      onConfirm: () => void;
+      testID?: string;
+    }) =>
+      React.createElement(
+        Pressable,
+        { onPress: onConfirm, testID: testID ?? 'slide-to-confirm' },
+        React.createElement(Text, null, label),
+      ),
+  };
+});
+
 const mockPayForRequest = payForRequest as jest.Mock;
 const mockVerifyPayment = verifyPayment as jest.Mock;
 
@@ -51,7 +73,7 @@ const transaction: TPaymentTransaction = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 };
 
-const PAY_BUTTON = `Pay ${formatMoney(25, 'NGN')}`;
+const PAY_SLIDE_LABEL = `Slide to pay ${formatMoney(25, 'NGN')}`;
 
 const renderSheet = (props: Partial<React.ComponentProps<typeof MakePaymentSheet>> = {}) =>
   render(
@@ -73,7 +95,7 @@ beforeEach(() => {
 describe('MakePaymentSheet (web)', () => {
   it('hides when not visible', () => {
     const { rerender } = renderSheet();
-    expect(screen.getByText(PAY_BUTTON)).toBeTruthy();
+    expect(screen.getByText(PAY_SLIDE_LABEL)).toBeTruthy();
     rerender(
       <MakePaymentSheet
         visible={false}
@@ -83,7 +105,7 @@ describe('MakePaymentSheet (web)', () => {
         currency="NGN"
       />,
     );
-    expect(screen.queryByText(PAY_BUTTON)).toBeNull();
+    expect(screen.queryByText(PAY_SLIDE_LABEL)).toBeNull();
   });
 
   it('tells the user Stripe payments need the mobile app', async () => {
@@ -93,7 +115,7 @@ describe('MakePaymentSheet (web)', () => {
     });
     renderSheet();
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText(/only available in the QuickPeek mobile app/)).toBeTruthy();
   });
 
@@ -106,7 +128,7 @@ describe('MakePaymentSheet (web)', () => {
     const onClose = jest.fn();
     renderSheet({ onPaid, onClose });
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onComplete');
 
@@ -123,7 +145,7 @@ describe('MakePaymentSheet (web)', () => {
     const onClose = jest.fn();
     renderSheet({ onClose });
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onComplete');
     await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -137,7 +159,7 @@ describe('MakePaymentSheet (web)', () => {
     mockVerifyPayment.mockRejectedValue(new Error('boom'));
     renderSheet();
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onComplete');
     expect(await screen.findByText(/could not confirm/i)).toBeTruthy();
@@ -150,7 +172,7 @@ describe('MakePaymentSheet (web)', () => {
     });
     renderSheet();
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onCancel');
     await waitFor(() => expect(screen.queryByTestId('paystack-checkout')).toBeNull());
@@ -160,18 +182,18 @@ describe('MakePaymentSheet (web)', () => {
     mockPayForRequest.mockResolvedValue({ transaction });
     renderSheet();
 
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText(/unexpected payment response/i)).toBeTruthy();
   });
 
   it('shows API and generic initiation errors', async () => {
     mockPayForRequest.mockRejectedValueOnce({ response: { data: { error: 'Not payable' } } });
     renderSheet();
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText('Not payable')).toBeTruthy();
 
     mockPayForRequest.mockRejectedValueOnce(new Error('network'));
-    fireEvent.press(screen.getByText(PAY_BUTTON));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText(/failed to start/i)).toBeTruthy();
   });
 });

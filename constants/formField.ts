@@ -5,6 +5,9 @@ import { fonts } from './fonts';
 /** Horizontal padding inside pill / bordered form inputs. */
 export const FORM_FIELD_INPUT_PADDING_HORIZONTAL = 14;
 
+/** Vertical gap between stacked form fields. */
+export const FORM_FIELD_VERTICAL_GAP = 16;
+
 /** Shared label above form inputs — flush with the input's left border. */
 export const formFieldLabelStyles = StyleSheet.create({
   label: {

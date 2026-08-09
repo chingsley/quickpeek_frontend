@@ -1,6 +1,7 @@
 // components / Shared / CustomButton.tsx
 
 import { colors } from '@/constants/colors';
+import { BORDER_RADIUS_PILL } from '@/constants/layout';
 import React from 'react';
 import {
   ActivityIndicator, GestureResponderEvent,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: colors.PRIMARY,
     height: 50,
-    borderRadius: 100,
+    borderRadius: BORDER_RADIUS_PILL,
     marginTop: 15,
     paddingHorizontal: 24,
     display: 'flex',
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'roboto-bold',
-    fontSize: 20,
+    fontSize: 21,
     color: colors.BG_WHITE,
   },
   textOutline: {

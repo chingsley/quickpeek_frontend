@@ -70,69 +70,148 @@ const HeroArt = () => (
 
 /**
  * Corner-only PRIMARY art for sign-in / sign-up.
- * Each panel is clipped so decoration stays in the margins, never over form fields.
+ * "Local constellation" — connected nodes, horizon curves, and soft washes
+ * that suggest people nearby without overlapping the form.
  */
 const FormBackgroundArt = () => (
   <>
+    {/* Top-right — nearby network cluster */}
     <View style={styles.topRightCorner}>
-      <Svg width="100%" height="100%" viewBox="0 0 220 200" preserveAspectRatio="xMaxYMin slice">
+      <Svg width="100%" height="100%" viewBox="0 0 240 210" preserveAspectRatio="xMaxYMin slice">
         <Defs>
-          <RadialGradient id="authBlob-form-tr" cx="100%" cy="0%" rx="80%" ry="80%">
-            <Stop offset="0%" stopColor={colors.PRIMARY} stopOpacity={0.18} />
+          <RadialGradient id="authFormGlowTR" cx="85%" cy="15%" rx="70%" ry="70%">
+            <Stop offset="0%" stopColor={colors.PRIMARY} stopOpacity={0.16} />
+            <Stop offset="55%" stopColor={colors.LIGHT_BLUE} stopOpacity={0.08} />
             <Stop offset="100%" stopColor={colors.PRIMARY} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Circle cx="220" cy="0" r="160" fill="url(#authBlob-form-tr)" />
-        <G opacity={0.28}>
-          <Circle cx="220" cy="10" r="48" fill="none" stroke={colors.PRIMARY} strokeWidth={1.5} />
-          <Circle cx="220" cy="10" r="88" fill="none" stroke={colors.PRIMARY} strokeWidth={1.5} />
-          <Circle cx="220" cy="10" r="132" fill="none" stroke={colors.PRIMARY} strokeWidth={1.25} />
+        <Circle cx="210" cy="20" r="150" fill="url(#authFormGlowTR)" />
+        <G opacity={0.22}>
+          <Path
+            d="M 118 58 C 148 42, 178 48, 204 72"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={1.25}
+            strokeLinecap="round"
+          />
+          <Path
+            d="M 132 88 C 162 74, 188 82, 214 104"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={1}
+            strokeLinecap="round"
+            strokeDasharray="4 7"
+          />
+          <Path
+            d="M 96 78 C 126 96, 156 88, 186 108"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={0.9}
+            strokeLinecap="round"
+            opacity={0.7}
+          />
         </G>
-        <G transform="translate(198, 28) scale(0.9)" opacity={0.95}>
-          <Path d={LOCATION_PIN_PATH} fill={colors.PRIMARY} />
+        <G>
+          <Circle cx="204" cy="72" r="14" fill={colors.SECONDARY} opacity={0.9} />
+          <Circle cx="204" cy="72" r="14" fill="none" stroke={colors.PRIMARY} strokeWidth={1.25} opacity={0.45} />
+          <Circle cx="204" cy="72" r="4" fill={colors.PRIMARY} opacity={0.85} />
+          <Circle cx="132" cy="88" r="3" fill={colors.PRIMARY} opacity={0.35} />
+          <Circle cx="186" cy="108" r="3.5" fill={colors.PRIMARY} opacity={0.5} />
+          <Circle cx="118" cy="58" r="2.5" fill={colors.PRIMARY} opacity={0.28} />
         </G>
       </Svg>
     </View>
 
+    {/* Top-left — horizon arcs */}
     <View style={styles.topLeftCorner}>
-      <Svg width="100%" height="100%" viewBox="0 0 120 100">
-        <G opacity={0.26}>
+      <Svg width="100%" height="100%" viewBox="0 0 160 110">
+        <G opacity={0.2}>
           <Path
-            d="M28 18c0-5.52 4.48-10 10-10s10 4.48 10 10c0 6.5-10 14-10 14s-10-7.5-10-14z"
+            d="M -8 72 Q 52 38, 120 58"
             fill="none"
             stroke={colors.PRIMARY}
             strokeWidth={1.5}
+            strokeLinecap="round"
           />
-          <Circle cx="38" cy="18" r="2.5" fill={colors.PRIMARY} />
+          <Path
+            d="M -4 88 Q 60 58, 132 76"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={1}
+            strokeLinecap="round"
+          />
+          <Path
+            d="M 0 104 Q 64 78, 148 94"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={0.75}
+            strokeLinecap="round"
+            opacity={0.65}
+          />
         </G>
+        <Circle cx="46" cy="52" r="3" fill={colors.PRIMARY} opacity={0.3} />
+        <Circle cx="46" cy="52" r="10" fill="none" stroke={colors.PRIMARY} strokeWidth={0.75} opacity={0.18} />
       </Svg>
     </View>
 
+    {/* Bottom-left — flowing contours */}
     <View style={styles.bottomLeftCorner}>
-      <Svg width="100%" height="100%" viewBox="0 0 200 180" preserveAspectRatio="xMinYMax slice">
+      <Svg width="100%" height="100%" viewBox="0 0 220 200" preserveAspectRatio="xMinYMax slice">
         <Defs>
-          <RadialGradient id="authBlob-form-bl" cx="0%" cy="100%" rx="90%" ry="90%">
-            <Stop offset="0%" stopColor={colors.PRIMARY} stopOpacity={0.16} />
+          <RadialGradient id="authFormGlowBL" cx="0%" cy="100%" rx="85%" ry="85%">
+            <Stop offset="0%" stopColor={colors.PRIMARY} stopOpacity={0.14} />
             <Stop offset="100%" stopColor={colors.PRIMARY} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Circle cx="0" cy="180" r="130" fill="url(#authBlob-form-bl)" />
-        <Path
-          d="M -10 150 Q 60 120 140 165"
-          fill="none"
-          stroke={colors.PRIMARY}
-          strokeWidth={1.25}
-          opacity={0.24}
-        />
+        <Circle cx="0" cy="200" r="145" fill="url(#authFormGlowBL)" />
+        <G opacity={0.24}>
+          <Path
+            d="M -20 148 Q 40 118, 110 138 T 200 128"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={1.25}
+            strokeLinecap="round"
+          />
+          <Path
+            d="M -16 168 Q 48 142, 118 158 T 208 148"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={1}
+            strokeLinecap="round"
+          />
+          <Path
+            d="M -12 186 Q 54 164, 126 178 T 214 166"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={0.75}
+            strokeLinecap="round"
+            opacity={0.6}
+          />
+        </G>
+        <Circle cx="72" cy="156" r="2.5" fill={colors.PRIMARY} opacity={0.4} />
       </Svg>
     </View>
 
+    {/* Bottom-right — constellation */}
     <View style={styles.bottomRightCorner}>
-      <Svg width="100%" height="100%" viewBox="0 0 140 120">
-        <G opacity={0.24}>
-          <Circle cx="120" cy="100" r="56" fill="none" stroke={colors.PRIMARY} strokeWidth={1.25} />
-          <Circle cx="120" cy="100" r="92" fill="none" stroke={colors.PRIMARY} strokeWidth={1.25} />
+      <Svg width="100%" height="100%" viewBox="0 0 180 150">
+        <G opacity={0.2}>
+          <Path
+            d="M 108 34 L 138 52 L 126 82 L 94 74 Z"
+            fill="none"
+            stroke={colors.PRIMARY}
+            strokeWidth={0.9}
+            strokeLinejoin="round"
+          />
+          <Path d="M 108 34 L 94 74" stroke={colors.PRIMARY} strokeWidth={0.75} opacity={0.5} />
+          <Path d="M 138 52 L 156 68" stroke={colors.PRIMARY} strokeWidth={0.75} strokeDasharray="3 5" />
         </G>
+        <Circle cx="108" cy="34" r="3.5" fill={colors.PRIMARY} opacity={0.55} />
+        <Circle cx="138" cy="52" r="2.5" fill={colors.PRIMARY} opacity={0.4} />
+        <Circle cx="126" cy="82" r="3" fill={colors.PRIMARY} opacity={0.35} />
+        <Circle cx="94" cy="74" r="2" fill={colors.PRIMARY} opacity={0.28} />
+        <Circle cx="156" cy="68" r="2" fill={colors.PRIMARY} opacity={0.22} />
+        <Circle cx="148" cy="108" r="24" fill="none" stroke={colors.PRIMARY} strokeWidth={0.75} opacity={0.14} />
       </Svg>
     </View>
   </>
@@ -156,32 +235,32 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: '52%',
-    height: '26%',
+    width: '56%',
+    height: '28%',
     overflow: 'hidden',
   },
   topLeftCorner: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 88,
-    height: 72,
+    width: 120,
+    height: 88,
     overflow: 'hidden',
   },
   bottomLeftCorner: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    width: '42%',
-    height: '20%',
+    width: '48%',
+    height: '22%',
     overflow: 'hidden',
   },
   bottomRightCorner: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: '38%',
-    height: '18%',
+    width: '42%',
+    height: '20%',
     overflow: 'hidden',
   },
 });

@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   ratingMeta: {
     fontFamily: 'roboto',
-    fontSize: 11,
+    fontSize: 12,
     color: colors.DARK_GRAY,
   },
   editCard: {

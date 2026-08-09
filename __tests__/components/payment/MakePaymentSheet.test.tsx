@@ -34,6 +34,28 @@ jest.mock('@/components/payment/PaystackWebView', () => {
   };
 });
 
+jest.mock('@/components/shared/SlideToConfirmButton', () => {
+  const React = require('react');
+  const { Pressable, Text } = require('react-native');
+  return {
+    __esModule: true,
+    default: ({
+      label,
+      onConfirm,
+      testID,
+    }: {
+      label: string;
+      onConfirm: () => void;
+      testID?: string;
+    }) =>
+      React.createElement(
+        Pressable,
+        { onPress: onConfirm, testID: testID ?? 'slide-to-confirm' },
+        React.createElement(Text, null, label),
+      ),
+  };
+});
+
 const mockPayForRequest = payForRequest as jest.Mock;
 const mockVerifyPayment = verifyPayment as jest.Mock;
 const mockUseStripe = useStripe as jest.Mock;
@@ -63,6 +85,8 @@ const stripeResponse = {
   transaction,
   stripe: { clientSecret: 'pi_1_secret', customerId: 'cus_1', ephemeralKey: 'ek_1' },
 };
+
+const PAY_SLIDE_LABEL = 'Slide to pay $25.00';
 
 const renderSheet = (props: Partial<React.ComponentProps<typeof MakePaymentSheet>> = {}) =>
   render(
@@ -106,7 +130,7 @@ describe('MakePaymentSheet', () => {
     const onClose = jest.fn();
     renderSheet({ onPaid, onClose });
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
 
     await waitFor(() => expect(onPaid).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'tx_1', status: 'SUCCEEDED' }),
@@ -127,7 +151,7 @@ describe('MakePaymentSheet', () => {
     initPaymentSheet.mockResolvedValue({ error: { message: 'Bad client secret' } });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText('Bad client secret')).toBeTruthy();
     expect(presentPaymentSheet).not.toHaveBeenCalled();
   });
@@ -137,7 +161,7 @@ describe('MakePaymentSheet', () => {
     presentPaymentSheet.mockResolvedValue({ error: { code: 'Failed', message: 'Card declined' } });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText('Card declined')).toBeTruthy();
   });
 
@@ -146,11 +170,11 @@ describe('MakePaymentSheet', () => {
     presentPaymentSheet.mockResolvedValue({ error: { code: 'Canceled', message: 'Canceled' } });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     await waitFor(() => expect(presentPaymentSheet).toHaveBeenCalled());
     expect(screen.queryByText('Card declined')).toBeNull();
     // Still on the confirm state — the payer can try again.
-    expect(screen.getByText('Pay $25.00')).toBeTruthy();
+    expect(screen.getByText(PAY_SLIDE_LABEL)).toBeTruthy();
   });
 
   it('shows the API error when initiating payment fails', async () => {
@@ -159,7 +183,7 @@ describe('MakePaymentSheet', () => {
     });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(
       await screen.findByText('The responder cannot receive payments yet'),
     ).toBeTruthy();
@@ -169,7 +193,7 @@ describe('MakePaymentSheet', () => {
     mockPayForRequest.mockRejectedValue(new Error('network down'));
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText(/failed to start/i)).toBeTruthy();
   });
 
@@ -177,7 +201,7 @@ describe('MakePaymentSheet', () => {
     mockPayForRequest.mockResolvedValue({ transaction });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     expect(await screen.findByText(/unexpected payment response/i)).toBeTruthy();
   });
 
@@ -190,7 +214,7 @@ describe('MakePaymentSheet', () => {
     const onClose = jest.fn();
     renderSheet({ onPaid, onClose });
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     expect(checkout.props.authorizationUrl).toBe('https://paystack.test/pay/ref_1');
 
@@ -208,7 +232,7 @@ describe('MakePaymentSheet', () => {
     mockVerifyPayment.mockRejectedValue(new Error('boom'));
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onComplete');
     expect(await screen.findByText(/could not confirm/i)).toBeTruthy();
@@ -221,7 +245,7 @@ describe('MakePaymentSheet', () => {
     });
     renderSheet();
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     const checkout = await screen.findByTestId('paystack-checkout');
     fireEvent(checkout, 'onCancel');
     await waitFor(() => expect(screen.queryByTestId('paystack-checkout')).toBeNull());
@@ -232,7 +256,7 @@ describe('MakePaymentSheet', () => {
     const onClose = jest.fn();
     renderSheet({ onClose });
 
-    fireEvent.press(screen.getByText('Pay $25.00'));
+    fireEvent.press(screen.getByText(PAY_SLIDE_LABEL));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 });

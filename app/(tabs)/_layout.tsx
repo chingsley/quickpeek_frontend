@@ -30,7 +30,7 @@ const TabLayout = () => {
         screenOptions={{
           tabBarShowLabel: true,
           tabBarLabelStyle: {
-            fontSize: 12,
+            fontSize: 13,
             marginTop: 2,
             color: colors.PRIMARY,
           },

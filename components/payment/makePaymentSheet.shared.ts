@@ -2,6 +2,7 @@ import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
 import { StyleSheet } from 'react-native';
 import { TPaymentTransaction } from '@/types/payment.types';
+import { formatMoney } from '@/utils/payment.utils';
 
 export type MakePaymentSheetProps = {
   visible: boolean;
@@ -18,6 +19,11 @@ export const initiationErrorMessage = (error: unknown): string => {
     ?.error;
   return apiError ?? 'Payment failed to start. Please try again.';
 };
+
+export const makePaymentSlideLabel = (amount: number, currency: string): string =>
+  `Slide to pay ${formatMoney(amount, currency)}`;
+
+export const PAYMENT_SUCCESS_DISPLAY_MS = process.env.NODE_ENV === 'test' ? 0 : 1200;
 
 export const makePaymentSheetStyles = StyleSheet.create({
   content: {
@@ -41,7 +47,7 @@ export const makePaymentSheetStyles = StyleSheet.create({
   },
   amount: {
     fontFamily: fonts.FONT_FAMILY_BOLD,
-    fontSize: 32,
+    fontSize: 33,
     color: colors.PRIMARY,
     marginVertical: 20,
   },

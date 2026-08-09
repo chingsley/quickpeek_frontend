@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   headline: {
     fontFamily: fonts.FONT_FAMILY_EXTRABOLD,
-    fontSize: 34,
+    fontSize: 35,
     lineHeight: 40,
     color: colors.BG_WHITE,
     letterSpacing: -0.4,

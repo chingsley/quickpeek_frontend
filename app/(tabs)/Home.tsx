@@ -745,7 +745,7 @@ const styles = StyleSheet.create({
   },
   chatBadgeText: {
     color: colors.BG_WHITE,
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 'bold'
   },
   filterWrap: {

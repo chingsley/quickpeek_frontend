@@ -867,13 +867,13 @@ const styles = StyleSheet.create({
   replyPreviewBody: { flex: 1, marginRight: 8 },
   replyPreviewName: {
     fontFamily: 'roboto-medium',
-    fontSize: 11,
+    fontSize: 12,
     color: colors.PRIMARY,
     marginBottom: 2,
   },
   replyPreviewText: {
     fontFamily: 'roboto',
-    fontSize: 12,
+    fontSize: 13,
     color: colors.MEDIUM_GRAY,
   },
   systemBubble: {
@@ -910,7 +910,7 @@ const styles = StyleSheet.create({
   },
   systemTime: {
     fontFamily: 'roboto',
-    fontSize: 10,
+    fontSize: 11,
     color: colors.MEDIUM_GRAY,
     marginTop: 6,
     textAlign: 'center',

@@ -2,17 +2,20 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import { Platform } from 'react-native';
 import FormField from '@/components/shared/FormField';
+import { FORM_FIELD_INPUT_PADDING_HORIZONTAL } from '@/constants/formField';
 import { colors } from '@/constants/colors';
 
+const flattenStyle = (style: unknown) =>
+  Array.isArray(style) ? Object.assign({}, ...style.flat()) : (style as object);
+
 describe('FormField', () => {
-  it('renders the label and input, and forwards text changes', () => {
+  it('renders the floating label and input, and forwards text changes', () => {
     const onChangeText = jest.fn();
     render(
       <FormField
         label="Title"
         value=""
         onChangeText={onChangeText}
-        placeholder="Short summary"
         testID="title-field"
       />,
     );
@@ -50,10 +53,8 @@ describe('FormField', () => {
       />,
     );
     expect(screen.getByText('Price cannot exceed $10,000.00')).toBeTruthy();
-    const input = screen.getByTestId('price-field');
-    const flat = Array.isArray(input.props.style)
-      ? Object.assign({}, ...input.props.style.flat())
-      : input.props.style;
+    const container = screen.getByTestId('price-field-container');
+    const flat = flattenStyle(container.props.style);
     expect(flat.borderColor).toBe(colors.RED);
   });
 
@@ -61,10 +62,8 @@ describe('FormField', () => {
     render(
       <FormField label="Price ($)" value="5" onChangeText={jest.fn()} testID="ok-field" />,
     );
-    const input = screen.getByTestId('ok-field');
-    const flat = Array.isArray(input.props.style)
-      ? Object.assign({}, ...input.props.style.flat())
-      : input.props.style;
+    const container = screen.getByTestId('ok-field-container');
+    const flat = flattenStyle(container.props.style);
     expect(flat.borderColor).not.toBe(colors.RED);
   });
 
@@ -91,13 +90,11 @@ describe('FormField', () => {
     expect(screen.getByText('3 / 2000')).toBeTruthy();
   });
 
-  it('aligns the label with the input left edge', () => {
+  it('positions the floating label inside the input left edge', () => {
     render(<FormField label="Title" value="" onChangeText={jest.fn()} />);
     const label = screen.getByText('Title');
-    const flat = Array.isArray(label.props.style)
-      ? Object.assign({}, ...label.props.style.flat())
-      : label.props.style;
-    expect(flat.paddingLeft).toBeUndefined();
+    const flat = flattenStyle(label.props.style);
+    expect(flat.left).toBe(FORM_FIELD_INPUT_PADDING_HORIZONTAL);
   });
 
   it('forwards keyboard type, input mode, and multiline to the input', () => {
@@ -124,7 +121,7 @@ describe('FormField', () => {
     try {
       render(<FormField label="Title" value="" onChangeText={jest.fn()} testID="web-field" />);
       const input = screen.getByTestId('web-field');
-      const flat = Object.assign({}, ...input.props.style.flat());
+      const flat = flattenStyle(input.props.style);
       expect(flat.userSelect).toBe('text');
     } finally {
       if (originalOS) Object.defineProperty(Platform, 'OS', originalOS);
