@@ -1,14 +1,15 @@
+import AuthLandingHeroArt from '@/components/auth/AuthLandingHeroArt';
 import CustomButton from '@/components/shared/CustomButton';
 import { useActionSheet } from '@/components/shared/useActionSheet';
 import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
 import { images } from '@/constants/images';
+import { SCREEN_CHROME_HORIZONTAL_PADDING } from '@/constants/layout';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Image,
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,6 +18,10 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SocialProvider = 'google' | 'apple' | 'facebook';
+
+const WORDMARK_TEXT_SIZE = fonts.FONT_SIZE_SCREEN_TITLE;
+/** Tall “Q” cap height — sits above the rest of the word on a shared baseline. */
+const WORDMARK_LOGO_BADGE_SIZE = 52;
 
 const SOCIAL_PROVIDERS: { id: SocialProvider; icon: keyof typeof Ionicons.glyphMap; label: string; }[] = [
   { id: 'google', icon: 'logo-google', label: 'Google' },
@@ -39,26 +44,32 @@ const AuthLandingScreen = () => {
 
   return (
     <View style={styles.root}>
-      <ImageBackground source={images.hero3} style={styles.hero} resizeMode="cover">
-        <View style={styles.heroOverlay} />
+      <View style={styles.hero}>
+        <AuthLandingHeroArt />
         <SafeAreaView style={styles.heroContent} edges={['top']}>
-          <View style={styles.branding}>
-            <Image source={images.logo} style={styles.logo} resizeMode="contain" />
-            <Text style={styles.appName}>QuickPeek</Text>
-            {/* <Text style={styles.tagline}>
-              Ask questions from people <Text style={styles.taglineHighlight}>nearby</Text>.
+          <View style={styles.branding} accessibilityRole="header" accessibilityLabel="QuickPeek">
+            <View style={styles.wordmarkRow}>
+              <View style={styles.logoBadge}>
+                <Image source={images.logo} style={styles.logo} resizeMode="contain" accessibilityElementsHidden />
+              </View>
+              <Text style={styles.appName}>uickPeek</Text>
+            </View>
+          </View>
+
+          <View style={styles.heroMessage}>
+            <Text style={styles.headline}>Know before you go.</Text>
+            <Text style={styles.subheadline}>
+              Ask someone who&apos;s actually there—not reviews from last month.
             </Text>
-            <Text style={styles.tagline}>
-              Get answers from <Text style={styles.taglineHighlight}>real people</Text>.
-            </Text> */}
           </View>
         </SafeAreaView>
-      </ImageBackground>
+      </View>
 
       <View style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, 20) }]}>
         <CustomButton
           text="Sign in with email"
           onPress={() => router.push('/(auth)/signin')}
+          variant="outline"
           fullWidth
           noTopMargin
         />
@@ -103,52 +114,62 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BG_WHITE,
   },
   hero: {
+    backgroundColor: colors.PRIMARY,
     flex: 1,
-    justifyContent: 'flex-end',
-  },
-  heroOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    overflow: 'hidden',
   },
   heroContent: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingTop: 46,
+    paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING + 8,
   },
   branding: {
+    alignSelf: 'flex-start',
+    paddingTop: 8,
+  },
+  wordmarkRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+  },
+  logoBadge: {
+    borderRadius: '50%',
+    backgroundColor: colors.SECONDARY,
     alignItems: 'center',
-    maxWidth: 320,
+    justifyContent: 'center',
+    marginRight: 2,
+    padding: 4,
   },
   logo: {
-    width: 80,
-    height: 80,
-    marginBottom: 14,
+    width: WORDMARK_LOGO_BADGE_SIZE,
+    height: WORDMARK_LOGO_BADGE_SIZE,
   },
   appName: {
     fontFamily: fonts.FONT_FAMILY_BOLD,
-    fontSize: fonts.FONT_SIZE_SCREEN_TITLE,
-    color: colors.PRIMARY,
-    marginBottom: 12,
-    textAlign: 'center',
-    // textShadowColor: 'rgba(0, 0, 0, 0.35)',
-    // textShadowOffset: { width: 0, height: 1 },
-    // textShadowRadius: 6,
+    fontSize: WORDMARK_TEXT_SIZE,
+    color: colors.SECONDARY,
+    lineHeight: WORDMARK_TEXT_SIZE,
+    includeFontPadding: false,
+    paddingBottom: 2,
   },
-  tagline: {
+  heroMessage: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 52,
+    maxWidth: 320,
+  },
+  headline: {
+    fontFamily: fonts.FONT_FAMILY_EXTRABOLD,
+    fontSize: 34,
+    lineHeight: 40,
+    color: colors.BG_WHITE,
+    letterSpacing: -0.4,
+    marginBottom: 12,
+  },
+  subheadline: {
     fontFamily: fonts.FONT_FAMILY_REGULAR,
     fontSize: fonts.FONT_SIZE_SMALL,
-    color: colors.DARK_GRAY,
-    textAlign: 'center',
     lineHeight: 24,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  taglineHighlight: {
-    fontFamily: fonts.FONT_FAMILY_BOLD,
-    color: colors.SECONDARY,
+    color: colors.TEXT_ON_PRIMARY_MUTED,
   },
   sheet: {
     backgroundColor: colors.BG_WHITE,

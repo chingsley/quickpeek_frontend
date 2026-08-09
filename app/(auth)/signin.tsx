@@ -1,7 +1,6 @@
-import FormField from '@/components/shared/FormField';
+import AuthFormScreenLayout from '@/components/auth/AuthFormScreenLayout';
 import CustomButton from '@/components/shared/CustomButton';
-import AuthBackButton from '@/components/auth/AuthBackButton';
-import KeyboardAwareScreen from '@/components/shared/KeyboardAwareScreen';
+import FormField from '@/components/shared/FormField';
 import { useActionSheet } from '@/components/shared/useActionSheet';
 import { authScreenStyles } from '@/constants/authScreen';
 import { notifConfig } from '@/config';
@@ -11,7 +10,6 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignIn = () => {
   const router = useRouter();
@@ -72,48 +70,44 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView style={authScreenStyles.safeArea}>
-      <KeyboardAwareScreen contentContainerStyle={authScreenStyles.scrollContainer}>
-        <View style={authScreenStyles.container}>
-          <AuthBackButton />
-          <Text style={authScreenStyles.title}>Sign In</Text>
-          <View style={authScreenStyles.form}>
-            <FormField
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              error={showFieldErrors ? fieldErrors.email ?? null : null}
-              testID="signin-email-input"
-            />
-            <FormField
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Password"
-              secureTextEntry
-              autoComplete="password"
-              error={showFieldErrors ? fieldErrors.password ?? null : null}
-              testID="signin-password-input"
-            />
-            <CustomButton
-              text={isLoading ? 'Signing In...' : 'Sign In'}
-              onPress={handleSignIn}
-              disabled={isLoading}
-              loading={isLoading}
-            />
-            <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
-              <Text style={authScreenStyles.link}>Don't have an account? Sign up</Text>
-            </TouchableOpacity>
-          </View>
+    <>
+      <AuthFormScreenLayout title="Sign In">
+        <View style={authScreenStyles.form}>
+          <FormField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            error={showFieldErrors ? fieldErrors.email ?? null : null}
+            testID="signin-email-input"
+          />
+          <FormField
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+            autoComplete="password"
+            error={showFieldErrors ? fieldErrors.password ?? null : null}
+            testID="signin-password-input"
+          />
+          <CustomButton
+            text={isLoading ? 'Signing In...' : 'Sign In'}
+            onPress={handleSignIn}
+            disabled={isLoading}
+            loading={isLoading}
+          />
+          <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
+            <Text style={authScreenStyles.link}>Don&apos;t have an account? Sign up</Text>
+          </TouchableOpacity>
         </View>
-      </KeyboardAwareScreen>
+      </AuthFormScreenLayout>
 
       {actionSheet}
-    </SafeAreaView>
+    </>
   );
 };
 

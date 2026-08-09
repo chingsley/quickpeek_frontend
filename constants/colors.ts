@@ -6,8 +6,8 @@ export const colors = {
   // Brand
   // PRIMARY: '#5c57fb',
   PRIMARY: '#0c538f',
-  SECONDARY: '#dcedf3',
-  // SECONDARY: '#b5d9f4',
+  // SECONDARY: '#dcedf3',
+  SECONDARY: '#eff3f6',
   ACTIVE: '#CB2AF7',
 
   // Neutrals — backgrounds

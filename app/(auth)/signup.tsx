@@ -1,15 +1,12 @@
+import AuthFormScreenLayout from '@/components/auth/AuthFormScreenLayout';
 import UserDetailsForm from '@/components/signup/UserDetailsForm';
-import AuthBackButton from '@/components/auth/AuthBackButton';
-import KeyboardAwareScreen from '@/components/shared/KeyboardAwareScreen';
 import { useActionSheet } from '@/components/shared/useActionSheet';
-import { authScreenStyles } from '@/constants/authScreen';
 import { registerUser } from '@/services/auth.services';
 import { SignupFormData } from '@/types/signup.types';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Platform, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform } from 'react-native';
 
 const Signup = () => {
   const router = useRouter();
@@ -60,22 +57,18 @@ const Signup = () => {
   };
 
   return (
-    <SafeAreaView style={authScreenStyles.safeArea}>
-      <KeyboardAwareScreen contentContainerStyle={authScreenStyles.scrollContainer}>
-        <View style={authScreenStyles.container}>
-          <AuthBackButton />
-          <Text style={authScreenStyles.title}>Sign Up</Text>
-          <UserDetailsForm
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSignup}
-            isLoading={isLoading}
-          />
-        </View>
-      </KeyboardAwareScreen>
+    <>
+      <AuthFormScreenLayout title="Sign Up">
+        <UserDetailsForm
+          formData={formData}
+          setFormData={setFormData}
+          onSubmit={handleSignup}
+          isLoading={isLoading}
+        />
+      </AuthFormScreenLayout>
 
       {actionSheet}
-    </SafeAreaView>
+    </>
   );
 };
 

@@ -17,6 +17,7 @@ interface CustomButtonProps {
   style?: Object;
   noTopMargin?: boolean;
   fullWidth?: boolean;
+  variant?: 'filled' | 'outline';
 }
 const CustomButton = ({
   onPress,
@@ -26,8 +27,10 @@ const CustomButton = ({
   style,
   noTopMargin,
   fullWidth,
+  variant = 'filled',
 }: CustomButtonProps) => {
   const isLoading = !!loading;
+  const isOutline = variant === 'outline';
 
   return (
     <View style={[fullWidth && styles.wrapFullWidth, style]}>
@@ -35,6 +38,7 @@ const CustomButton = ({
         onPress={onPress}
         style={[
           styles.btn,
+          isOutline && styles.btnOutline,
           fullWidth && styles.btnFullWidth,
           noTopMargin && styles.btnNoTopMargin,
         ]}
@@ -42,9 +46,12 @@ const CustomButton = ({
         accessibilityState={{ disabled: isLoading || !!disabled }}
       >
         {isLoading ? (
-          <ActivityIndicator size="small" color={styles.actvIndicator.color} />
+          <ActivityIndicator
+            size="small"
+            color={isOutline ? colors.PRIMARY : styles.actvIndicator.color}
+          />
         ) : (
-          <Text style={styles.text}>{text}</Text>
+          <Text style={[styles.text, isOutline && styles.textOutline]}>{text}</Text>
         )}
       </TouchableOpacity>
     </View>
@@ -64,6 +71,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.PRIMARY,
+  },
+  btnOutline: {
+    backgroundColor: colors.BG_WHITE,
+    // backgroundColor: colors.INPUT_BG,
+    borderColor: colors.PRIMARY,
   },
   btnNoTopMargin: {
     marginTop: 0,
@@ -79,6 +93,9 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold',
     fontSize: 20,
     color: colors.BG_WHITE,
+  },
+  textOutline: {
+    color: colors.PRIMARY,
   },
   actvIndicator: {
     color: colors.BG_WHITE,
