@@ -1,9 +1,16 @@
 import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
+import { images } from '@/constants/images';
 import { BORDER_RADIUS_PILL } from '@/constants/layout';
+import {
+  SEARCHBAR_LEADING_GAP,
+  SEARCHBAR_LEADING_ICON_SIZE,
+  SEARCHBAR_LEADING_LOGO_SIZE,
+} from '@/constants/searchbar';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { forwardRef } from 'react';
 import {
+  Image,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -17,6 +24,8 @@ interface Props {
   placeholder: string;
   inputValue: string;
   setValue: (value: string) => void;
+  /** Leading adornment — logo on Home, search icon elsewhere. */
+  leading?: 'search' | 'logo';
   /** Layout-only styles (e.g. margins). Box chrome lives in this component. */
   style?: StyleProp<ViewStyle>;
   returnKeyType?: TextInputProps['returnKeyType'];
@@ -28,6 +37,7 @@ const Searchbar = forwardRef<TextInput, Props>(function Searchbar(
     placeholder,
     inputValue,
     setValue,
+    leading = 'search',
     style,
     returnKeyType = 'search',
     autoCorrect = false,
@@ -36,7 +46,23 @@ const Searchbar = forwardRef<TextInput, Props>(function Searchbar(
 ) {
   return (
     <View style={[styles.container, style]}>
-      <Ionicons name="search-outline" size={20} color={colors.PRIMARY} style={styles.searchIcon} />
+      {leading === 'logo' ? (
+        <View style={styles.leadingLogoWrap}>
+          <Image
+            source={images.logo}
+            style={styles.leadingLogo}
+            resizeMode="contain"
+            accessibilityLabel="QuickPeek"
+          />
+        </View>
+      ) : (
+        <Ionicons
+          name="search-outline"
+          size={SEARCHBAR_LEADING_ICON_SIZE}
+          color={colors.PRIMARY}
+          style={styles.leadingIcon}
+        />
+      )}
       <TextInput
         ref={ref}
         placeholder={placeholder}
@@ -73,8 +99,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.CARD_BORDER,
   },
-  searchIcon: {
-    marginRight: 10,
+  leadingIcon: {
+    marginRight: SEARCHBAR_LEADING_GAP,
+  },
+  leadingLogoWrap: {
+    width: SEARCHBAR_LEADING_LOGO_SIZE,
+    height: SEARCHBAR_LEADING_LOGO_SIZE,
+    marginRight: SEARCHBAR_LEADING_GAP,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  leadingLogo: {
+    width: SEARCHBAR_LEADING_LOGO_SIZE,
+    height: SEARCHBAR_LEADING_LOGO_SIZE,
   },
   input: {
     flex: 1,

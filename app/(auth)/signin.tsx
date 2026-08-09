@@ -1,5 +1,6 @@
 import FormField from '@/components/shared/FormField';
 import CustomButton from '@/components/shared/CustomButton';
+import AuthBackButton from '@/components/auth/AuthBackButton';
 import KeyboardAwareScreen from '@/components/shared/KeyboardAwareScreen';
 import { useActionSheet } from '@/components/shared/useActionSheet';
 import { authScreenStyles } from '@/constants/authScreen';
@@ -74,6 +75,7 @@ const SignIn = () => {
     <SafeAreaView style={authScreenStyles.safeArea}>
       <KeyboardAwareScreen contentContainerStyle={authScreenStyles.scrollContainer}>
         <View style={authScreenStyles.container}>
+          <AuthBackButton />
           <Text style={authScreenStyles.title}>Sign In</Text>
           <View style={authScreenStyles.form}>
             <FormField

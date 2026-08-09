@@ -4,7 +4,7 @@
  */
 export const colors = {
   // Brand
-  // PRIMARY: '#156779',
+  // PRIMARY: '#5c57fb',
   PRIMARY: '#0c538f',
   SECONDARY: '#dcedf3',
   // SECONDARY: '#b5d9f4',

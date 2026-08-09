@@ -21,7 +21,7 @@ const AuthGate = ({ children }: AuthGateProps) => {
   }
 
   if (!isLoggedIn) {
-    return <Redirect href="/(auth)/signin" />;
+    return <Redirect href="/(auth)" />;
   }
 
   return <>{children}</>;

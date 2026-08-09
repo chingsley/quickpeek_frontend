@@ -8,14 +8,12 @@ import {
   HOME_FAB_TEXT_MAX_WIDTH,
   HOME_SCROLL_BOTTOM_LOCK_THRESHOLD,
 } from '@/constants/homeChrome';
-import { colors } from '@/constants/colors';
 import { chromeTargetProgress, homeChromeProgress } from '@/store/homeChrome.store';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import {
   Extrapolation,
   interpolate,
-  interpolateColor,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useFrameCallback,
@@ -330,8 +328,7 @@ export const useHomeScrollChrome = () => {
   const headerShellStyle = useAnimatedStyle(() => ({
     // The shell is in normal flow above the list, so shrinking it all the way
     // to zero slides the list content up with it — the two stay glued and no
-    // gap can open at any progress. The pinned logo strip is a separate
-    // overlay (see `logoStripStyle`), so the shell is free to reach zero.
+    // gap can open at any progress. The shell is free to reach zero.
     height: interpolate(
       homeChromeProgress.value,
       [0, 1],
@@ -339,23 +336,6 @@ export const useHomeScrollChrome = () => {
       Extrapolation.CLAMP,
     ),
   }));
-
-  const logoStripStyle = useAnimatedStyle(() => {
-    // Transparent while the solid shell is behind it; eases to the
-    // translucent tint once the shell has shrunk below the strip, so question
-    // cards scroll visibly underneath the pinned logo.
-    const tintStart = Math.max(
-      0,
-      1 - HOME_COLLAPSED_HEADER_HEIGHT / expandedHeaderHeight.value,
-    );
-    return {
-      backgroundColor: interpolateColor(
-        homeChromeProgress.value,
-        [0, tintStart, 1],
-        [colors.HOME_HEADER_STRIP_CLEAR, colors.HOME_HEADER_STRIP_CLEAR, colors.HOME_HEADER_COLLAPSED_TINT],
-      ),
-    };
-  });
 
   const headerChromeSlideStyle = useAnimatedStyle(() => {
     const slideUp = expandedHeaderHeight.value - HOME_COLLAPSED_HEADER_HEIGHT;
@@ -384,7 +364,6 @@ export const useHomeScrollChrome = () => {
     scrollHandler,
     headerShellStyle,
     headerChromeSlideStyle,
-    logoStripStyle,
     onHeaderLayout,
     resetChrome,
   };

@@ -6,8 +6,6 @@ import { HOME_FILTER_TABLET_ITEMS, SEARCH_FILTER_HEADER_GAP } from '@/constants/
 import { colors } from '@/constants/colors';
 import { feedCardStyles } from '@/constants/feedCard';
 import { fonts } from '@/constants/fonts';
-import { HOME_COLLAPSED_HEADER_HEIGHT } from '@/constants/homeChrome';
-import { images } from '@/constants/images';
 import {
   STATUS_ICON_SIZE,
 } from '@/constants/statusIcons';
@@ -39,7 +37,6 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Image,
   Platform,
   Pressable,
   StyleSheet,
@@ -67,7 +64,7 @@ const HomeScreen = () => {
   const feedScrollOffsetRef = useRef(0);
   const shouldRestoreFeedScrollRef = useRef(false);
   const hasLoadedFeedRef = useRef(false);
-  const { scrollHandler, headerShellStyle, headerChromeSlideStyle, logoStripStyle, onHeaderLayout, resetChrome } =
+  const { scrollHandler, headerShellStyle, headerChromeSlideStyle, onHeaderLayout, resetChrome } =
     useHomeScrollChrome();
   const { fabContainerStyle, fabTextStyle } = useHomeFloatingAskStyle(tabBarHeight);
   const setMenuCategories = useDrawerStore((state) => state.setMenuCategories);
@@ -534,9 +531,7 @@ const HomeScreen = () => {
             the list viewport grows and the content slides up glued to the
             shell's bottom edge — no gap can open at any progress, and a
             release settle can complete in either direction from any scroll
-            position. The pinned logo lives in a separate overlay strip so it
-            stays visible (and gains its translucent tint) once the shell has
-            collapsed away beneath it.
+            position. The list grows as the shell collapses.
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
             <View
@@ -579,6 +574,7 @@ const HomeScreen = () => {
                 {!isClosedCategory ? (
                   <Searchbar
                     ref={searchInputRef}
+                    leading="logo"
                     placeholder="Search questions"
                     inputValue={search}
                     setValue={setSearch}
@@ -663,10 +659,6 @@ const HomeScreen = () => {
               scrollEventThrottle={16}
             />
           </KeyboardAvoidingView>
-
-          <Animated.View style={[styles.logoStrip, logoStripStyle]} pointerEvents="none">
-            <Image source={images.logo} style={styles.logo} resizeMode="contain" accessibilityLabel="QuickPeek" />
-          </Animated.View>
         </View>
       </TouchableWithoutFeedback>
 
@@ -704,16 +696,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  logoStrip: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: HOME_COLLAPSED_HEADER_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 3,
-  },
   headerSide: {
     width: 72,
     zIndex: 1,
@@ -725,10 +707,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logo: {
-    height: 40,
-    width: 184,
   },
   searchBarPlacement: {
     marginHorizontal: 16,

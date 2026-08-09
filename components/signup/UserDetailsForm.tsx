@@ -1,12 +1,20 @@
 import CustomButton from '@/components/shared/CustomButton';
 import FormField from '@/components/shared/FormField';
+import { authScreenStyles } from '@/constants/authScreen';
 import { UserDetailsFormProps } from '@/types/signup.types';
+import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type FieldKey = 'name' | 'username' | 'email' | 'password' | 'confirmPassword';
 
-const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ formData, setFormData, nextStep, prevStep }) => {
+const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
+  formData,
+  setFormData,
+  onSubmit,
+  isLoading = false,
+}) => {
+  const router = useRouter();
   const [showFieldErrors, setShowFieldErrors] = useState(false);
 
   const fieldErrors = useMemo(() => {
@@ -24,16 +32,16 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ formData, setFormData
 
   const fieldError = (key: FieldKey) => (showFieldErrors ? fieldErrors[key] ?? null : null);
 
-  const handleNext = () => {
+  const handleSubmit = () => {
     if (Object.keys(fieldErrors).length > 0) {
       setShowFieldErrors(true);
       return;
     }
-    nextStep();
+    onSubmit();
   };
 
   return (
-    <View style={styles.stepContainer}>
+    <View style={styles.form}>
       <FormField
         label="Name"
         value={formData.name}
@@ -80,9 +88,14 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ formData, setFormData
         error={fieldError('confirmPassword')}
         testID="signup-confirm-password-input"
       />
-      <CustomButton text="Next" onPress={handleNext} />
-      <TouchableOpacity style={styles.backButton} onPress={prevStep}>
-        <Text style={styles.backButtonText}>Back</Text>
+      <CustomButton
+        text={isLoading ? 'Signing Up...' : 'Sign Up'}
+        onPress={handleSubmit}
+        disabled={isLoading}
+        loading={isLoading}
+      />
+      <TouchableOpacity onPress={() => router.replace('/(auth)/signin')}>
+        <Text style={authScreenStyles.link}>Already have an account? Sign in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -91,19 +104,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ formData, setFormData
 export default UserDetailsForm;
 
 const styles = StyleSheet.create({
-  stepContainer: {
+  form: {
     width: '100%',
-  },
-  backButton: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    marginTop: 10,
-  },
-  backButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
 });

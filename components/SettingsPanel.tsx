@@ -131,7 +131,7 @@ const SettingsPanel = ({ showTitle = true }: Props) => {
 
   const handleLogout = async () => {
     await logout();
-    router.replace('/(auth)/signin');
+    router.replace('/(auth)');
   };
 
   if (loading && !profile) {

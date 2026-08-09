@@ -329,9 +329,9 @@ export const useChatsScrollChrome = () => {
   const headerShellStyle = useAnimatedStyle(() => ({
     // The shell is in normal flow above the list, so shrinking it all the way
     // to zero slides the list content up with it — the two stay glued and no
-    // gap can open at any progress. The pinned toolbar (back button + logo)
-    // is a separate overlay (see `toolbarStripStyle`), so the shell is free
-    // to reach zero.
+    // gap can open at any progress. The pinned toolbar (back + menu) is a
+    // separate overlay (see `toolbarStripStyle`), so the shell is free to
+    // reach zero.
     height: interpolate(
       chatsChromeProgress.value,
       [0, 1],

@@ -20,7 +20,7 @@ const TabLayout = () => {
   }
 
   if (!isLoggedIn) {
-    return <Redirect href="/(auth)/signin" />;
+    return <Redirect href="/(auth)" />;
   }
 
   return (

@@ -14,7 +14,6 @@ import {
   SEARCH_FILTER_HEADER_GAP,
 } from '@/constants/filterTablets';
 import { fonts } from '@/constants/fonts';
-import { images } from '@/constants/images';
 import { screenChromeStyles } from '@/constants/screenChrome';
 import { SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM } from '@/constants/layout';
 import { useChatsScrollChrome } from '@/hooks/useChatsScrollChrome';
@@ -28,7 +27,6 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -42,9 +40,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const CHAT_LIST_AVATAR_SIZE = 48;
 /** Shared horizontal inset for Chats header, search, and list rows. */
 const CHATS_PAGE_GUTTER = 20;
-/** Centered toolbar logo — height matches Home `logoStrip`; width preserves wordmark aspect. */
-const LOGO_SIZE = 40;
-const CHATS_TOOLBAR_LOGO_WIDTH = 184;
 
 const previewText = (conv: TConversation): string => {
   if (conv.lastMessage?.text) {
@@ -254,9 +249,9 @@ const ChatsScreen = () => {
             position. The footer spacer (ChatsListBottomSpacer) grows by the
             deficit between the header height and the list's scrollable
             distance, so the collapse works on short chat lists too without a
-            flicker loop. The overlay strip keeps only the centered logo
-            pinned; the back and menu buttons fade out with the chrome (and
-            stop receiving touches once invisible).
+            flicker loop. The pinned toolbar keeps the back and menu buttons
+            visible when collapsed; they fade out with the chrome (and stop
+            receiving touches once invisible).
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
             <View
@@ -269,6 +264,7 @@ const ChatsScreen = () => {
                 </View>
 
                 <Searchbar
+                  leading="logo"
                   placeholder="Search chats"
                   inputValue={search}
                   setValue={setSearch}
@@ -307,14 +303,6 @@ const ChatsScreen = () => {
             style={[styles.pinnedToolbar, toolbarStripStyle]}
             pointerEvents="box-none"
           >
-            <View style={styles.logoOverlay} pointerEvents="none">
-              <Image
-                source={images.logo}
-                style={styles.logo}
-                resizeMode="contain"
-                accessibilityLabel="QuickPeek"
-              />
-            </View>
             <Animated.View
               style={[screenChromeStyles.actionRowInset, styles.toolbarRow, toolbarChromeFadeStyle]}
               pointerEvents={toolbarTouchEnabled ? 'auto' : 'none'}
@@ -360,11 +348,6 @@ const styles = StyleSheet.create({
     zIndex: 3,
     justifyContent: 'center',
   },
-  logoOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   toolbarRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -379,10 +362,6 @@ const styles = StyleSheet.create({
   },
   toolbarCenter: {
     flex: 1,
-  },
-  logo: {
-    height: LOGO_SIZE,
-    width: CHATS_TOOLBAR_LOGO_WIDTH,
   },
   searchBarPlacement: {
     marginHorizontal: CHATS_PAGE_GUTTER,
