@@ -4,7 +4,10 @@ import { ScreenTitle } from '@/components/shared/ScreenTitle';
 import ChatsListBottomSpacer from '@/components/ChatsListBottomSpacer';
 import { FilterTabletGroup } from '@/components/FilterTablet';
 import UserAvatar from '@/components/UserAvatar';
-import { CHATS_CHROME_FADE_OUT_END, CHATS_COLLAPSED_HEADER_HEIGHT } from '@/constants/chatsChrome';
+import {
+  CHATS_COLLAPSED_HEADER_HEIGHT,
+  CHATS_COLLAPSED_TITLE_FONT_SIZE,
+} from '@/constants/chatsChrome';
 import { colors } from '@/constants/colors';
 import {
   CHAT_FILTER_TABLET_ITEMS,
@@ -14,11 +17,10 @@ import {
 } from '@/constants/filterTablets';
 import { fonts } from '@/constants/fonts';
 import { screenChromeStyles } from '@/constants/screenChrome';
-import { SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM } from '@/constants/layout';
+import { SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM, CIRCULAR_CLICK_WIDTH } from '@/constants/layout';
 import { useChatsScrollChrome } from '@/hooks/useChatsScrollChrome';
 import { getConversations } from '@/services/requests.services';
 import SocketService from '@/services/socket.services';
-import { chatsChromeProgress } from '@/store/chatsChrome.store';
 import { AnswerRequestStatus, TConversation } from '@/types/answerRequest.types';
 import { formatListTime } from '@/utils/date';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -33,7 +35,7 @@ import {
   View,
 } from 'react-native';
 import { KeyboardController } from 'react-native-keyboard-controller';
-import Animated, { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CHAT_LIST_AVATAR_SIZE = 48;
@@ -93,22 +95,12 @@ const ChatsScreen = () => {
     scrollHandler,
     headerShellStyle,
     headerChromeSlideStyle,
-    toolbarChromeFadeStyle,
+    largeTitleStyle,
+    collapsedTitleStyle,
     toolbarStripStyle,
     onHeaderLayout,
     resetChrome,
   } = useChatsScrollChrome();
-
-  // The toolbar row fades out with the chrome — once faded it must stop
-  // receiving touches so the invisible back button doesn't swallow taps
-  // meant for the chat rows underneath.
-  const [toolbarTouchEnabled, setToolbarTouchEnabled] = useState(true);
-  useAnimatedReaction(
-    () => chatsChromeProgress.value,
-    (progress) => {
-      runOnJS(setToolbarTouchEnabled)(progress < CHATS_CHROME_FADE_OUT_END + 0.15);
-    },
-  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -244,9 +236,8 @@ const ChatsScreen = () => {
             position. The footer spacer (ChatsListBottomSpacer) grows by the
             deficit between the header height and the list's scrollable
             distance, so the collapse works on short chat lists too without a
-            flicker loop. The pinned toolbar keeps the back button
-            visible when collapsed; it fades out with the chrome (and stops
-            receiving touches once invisible).
+            flicker loop. The pinned toolbar keeps the back button visible
+            while a compact centered title crossfades in (WhatsApp-style).
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
             <View
@@ -254,9 +245,9 @@ const ChatsScreen = () => {
               onLayout={(event) => onHeaderLayout(event.nativeEvent.layout.height)}
             >
               <Animated.View style={headerChromeSlideStyle}>
-                <View style={screenChromeStyles.titleRow}>
+                <Animated.View style={[screenChromeStyles.titleRow, largeTitleStyle]}>
                   <ScreenTitle title="Chats" />
-                </View>
+                </Animated.View>
 
                 <Searchbar
                   leading="logo"
@@ -298,12 +289,15 @@ const ChatsScreen = () => {
             style={[styles.pinnedToolbar, toolbarStripStyle]}
             pointerEvents="box-none"
           >
-            <Animated.View
-              style={[screenChromeStyles.actionRowInset, styles.toolbarRow, toolbarChromeFadeStyle]}
-              pointerEvents={toolbarTouchEnabled ? 'auto' : 'none'}
-            >
+            <View style={[screenChromeStyles.actionRowInset, styles.toolbarRow]}>
               <BackButton />
-            </Animated.View>
+              <View style={styles.toolbarTitleSlot} pointerEvents="none">
+                <Animated.Text style={[styles.collapsedTitle, collapsedTitleStyle]}>
+                  Chats
+                </Animated.Text>
+              </View>
+              <View style={styles.toolbarSideSpacer} />
+            </View>
           </Animated.View>
         </View>
       </TouchableWithoutFeedback>
@@ -342,6 +336,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 0,
+  },
+  toolbarTitleSlot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
+  toolbarSideSpacer: {
+    width: CIRCULAR_CLICK_WIDTH,
+  },
+  collapsedTitle: {
+    fontFamily: fonts.FONT_FAMILY_BOLD,
+    fontSize: CHATS_COLLAPSED_TITLE_FONT_SIZE,
+    color: colors.TEXT_DARK,
+    textAlign: 'center',
   },
   searchBarPlacement: {
     marginHorizontal: CHATS_PAGE_GUTTER,

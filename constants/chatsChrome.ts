@@ -1,4 +1,5 @@
 import { CIRCULAR_CLICK_HEIGHT, SCREEN_CHROME_ACTION_ROW_MARGIN_TOP } from './layout';
+import { fonts } from './fonts';
 
 export { HOME_SCROLL_BOTTOM_LOCK_THRESHOLD as CHATS_SCROLL_BOTTOM_LOCK_THRESHOLD } from './homeChrome';
 
@@ -10,6 +11,16 @@ export const CHATS_COLLAPSED_HEADER_HEIGHT =
   SCREEN_CHROME_ACTION_ROW_MARGIN_TOP +
   CIRCULAR_CLICK_HEIGHT +
   CHATS_PINNED_TOOLBAR_PADDING_BOTTOM;
+
+/** Compact nav-bar title when the large header title collapses (WhatsApp-style). */
+export const CHATS_COLLAPSED_TITLE_FONT_SIZE = fonts.FONT_SIZE_SMALL;
+
+/**
+ * Scroll progress window where the compact toolbar title fades in while the
+ * large header title slides away.
+ */
+export const CHATS_COLLAPSED_TITLE_FADE_IN_START = 0.2;
+export const CHATS_COLLAPSED_TITLE_FADE_IN_END = 0.65;
 
 /**
  * Progress (0–1) at which header content opacity reaches zero.
