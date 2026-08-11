@@ -1,12 +1,16 @@
 import {
-  CHATS_CHROME_FADE_OUT_END,
   CHATS_CHROME_SLIDE_END,
   CHATS_COLLAPSED_HEADER_HEIGHT,
-  CHATS_COLLAPSED_TITLE_FADE_IN_END,
-  CHATS_COLLAPSED_TITLE_FADE_IN_START,
   CHATS_SCROLL_BOTTOM_LOCK_THRESHOLD,
 } from '@/constants/chatsChrome';
 import { colors } from '@/constants/colors';
+import {
+  scrollChromeCollapsedTitleOpacity,
+  scrollChromeCollapsedTitleTranslateY,
+  scrollChromeContentOpacity,
+  scrollChromeLargeTitleOpacity,
+  scrollChromeLargeTitleTranslateY,
+} from '@/utils/scrollChromeAnimations';
 import {
   chatsBaseMaxScrollY,
   chatsChromeProgress,
@@ -42,11 +46,6 @@ const CHATS_SETTLE_SMOOTHING_TAU_MS = 100;
 
 /** When the smoothed progress is within this of its target, snap exactly. */
 const PROGRESS_SNAP_EPSILON = 0.001;
-
-const chromeContentOpacity = (progress: number) => {
-  'worklet';
-  return interpolate(progress, [0, CHATS_CHROME_FADE_OUT_END], [1, 0], Extrapolation.CLAMP);
-};
 
 /**
  * Extra scrollable slack required (beyond the layout the collapse itself
@@ -346,7 +345,7 @@ export const useChatsScrollChrome = () => {
     const slideUp = chatsExpandedHeaderHeight.value - CHATS_COLLAPSED_HEADER_HEIGHT;
     const progress = chatsChromeProgress.value;
     return {
-      opacity: chromeContentOpacity(progress),
+      opacity: scrollChromeContentOpacity(progress),
       transform: [
         {
           translateY: interpolate(
@@ -364,40 +363,16 @@ export const useChatsScrollChrome = () => {
   const largeTitleStyle = useAnimatedStyle(() => {
     const progress = chatsChromeProgress.value;
     return {
-      opacity: interpolate(
-        progress,
-        [0, CHATS_CHROME_FADE_OUT_END * 0.85, CHATS_CHROME_FADE_OUT_END],
-        [1, 0.15, 0],
-        Extrapolation.CLAMP,
-      ),
-      transform: [
-        {
-          translateY: interpolate(progress, [0, 1], [0, -18], Extrapolation.CLAMP),
-        },
-      ],
+      opacity: scrollChromeLargeTitleOpacity(progress),
+      transform: [{ translateY: scrollChromeLargeTitleTranslateY(progress) }],
     };
   });
 
-  /** Compact centered title in the pinned toolbar (inverse crossfade of the large title). */
   const collapsedTitleStyle = useAnimatedStyle(() => {
     const progress = chatsChromeProgress.value;
     return {
-      opacity: interpolate(
-        progress,
-        [0, CHATS_COLLAPSED_TITLE_FADE_IN_START, CHATS_COLLAPSED_TITLE_FADE_IN_END, 1],
-        [0, 0, 1, 1],
-        Extrapolation.CLAMP,
-      ),
-      transform: [
-        {
-          translateY: interpolate(
-            progress,
-            [0, CHATS_COLLAPSED_TITLE_FADE_IN_END, 1],
-            [6, 2, 0],
-            Extrapolation.CLAMP,
-          ),
-        },
-      ],
+      opacity: scrollChromeCollapsedTitleOpacity(progress),
+      transform: [{ translateY: scrollChromeCollapsedTitleTranslateY(progress) }],
     };
   });
 

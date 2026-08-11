@@ -6,7 +6,6 @@ import { FilterTabletGroup } from '@/components/FilterTablet';
 import UserAvatar from '@/components/UserAvatar';
 import {
   CHATS_COLLAPSED_HEADER_HEIGHT,
-  CHATS_COLLAPSED_TITLE_FONT_SIZE,
 } from '@/constants/chatsChrome';
 import { colors } from '@/constants/colors';
 import {
@@ -292,7 +291,10 @@ const ChatsScreen = () => {
             <View style={[screenChromeStyles.actionRowInset, styles.toolbarRow]}>
               <BackButton />
               <View style={styles.toolbarTitleSlot} pointerEvents="none">
-                <Animated.Text style={[styles.collapsedTitle, collapsedTitleStyle]}>
+                <Animated.Text
+                  style={[screenChromeStyles.collapsedScrollTitle, collapsedTitleStyle]}
+                  numberOfLines={1}
+                >
                   Chats
                 </Animated.Text>
               </View>
@@ -345,12 +347,6 @@ const styles = StyleSheet.create({
   },
   toolbarSideSpacer: {
     width: CIRCULAR_CLICK_WIDTH,
-  },
-  collapsedTitle: {
-    fontFamily: fonts.FONT_FAMILY_BOLD,
-    fontSize: CHATS_COLLAPSED_TITLE_FONT_SIZE,
-    color: colors.TEXT_DARK,
-    textAlign: 'center',
   },
   searchBarPlacement: {
     marginHorizontal: CHATS_PAGE_GUTTER,

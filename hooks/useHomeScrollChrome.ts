@@ -1,19 +1,28 @@
 import {
-  HOME_COLLAPSED_HEADER_HEIGHT,
-  HOME_CHROME_FADE_OUT_END,
   HOME_CHROME_SLIDE_END,
+  HOME_COLLAPSED_HEADER_HEIGHT,
   HOME_FAB_COLLAPSED_SIZE,
   HOME_FAB_EXPANDED_WIDTH,
   HOME_FAB_ICON_GAP,
   HOME_FAB_TEXT_MAX_WIDTH,
   HOME_SCROLL_BOTTOM_LOCK_THRESHOLD,
 } from '@/constants/homeChrome';
+import { colors } from '@/constants/colors';
+import { SCROLL_CHROME_FADE_OUT_END } from '@/constants/scrollChrome';
 import { chromeTargetProgress, homeChromeProgress } from '@/store/homeChrome.store';
+import {
+  scrollChromeCollapsedTitleOpacity,
+  scrollChromeCollapsedTitleTranslateY,
+  scrollChromeContentOpacity,
+  scrollChromeLargeTitleOpacity,
+  scrollChromeLargeTitleTranslateY,
+} from '@/utils/scrollChromeAnimations';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import {
   Extrapolation,
   interpolate,
+  interpolateColor,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useFrameCallback,
@@ -257,9 +266,10 @@ export const useHomeScrollChrome = () => {
   );
 
   const onHeaderLayout = useCallback(
-    (height: number) => {
-      if (height > HOME_COLLAPSED_HEADER_HEIGHT) {
-        expandedHeaderHeight.value = height;
+    (slideHeight: number) => {
+      const total = slideHeight + HOME_COLLAPSED_HEADER_HEIGHT;
+      if (total > HOME_COLLAPSED_HEADER_HEIGHT) {
+        expandedHeaderHeight.value = total;
       }
     },
     [expandedHeaderHeight],
@@ -341,12 +351,7 @@ export const useHomeScrollChrome = () => {
     const slideUp = expandedHeaderHeight.value - HOME_COLLAPSED_HEADER_HEIGHT;
     const progress = homeChromeProgress.value;
     return {
-      opacity: interpolate(
-        progress,
-        [0, HOME_CHROME_FADE_OUT_END],
-        [1, 0],
-        Extrapolation.CLAMP,
-      ),
+      opacity: scrollChromeContentOpacity(progress),
       transform: [
         {
           translateY: interpolate(
@@ -360,10 +365,43 @@ export const useHomeScrollChrome = () => {
     };
   });
 
+  const largeTitleStyle = useAnimatedStyle(() => {
+    const progress = homeChromeProgress.value;
+    return {
+      opacity: scrollChromeLargeTitleOpacity(progress),
+      transform: [{ translateY: scrollChromeLargeTitleTranslateY(progress) }],
+    };
+  });
+
+  const collapsedTitleStyle = useAnimatedStyle(() => {
+    const progress = homeChromeProgress.value;
+    return {
+      opacity: scrollChromeCollapsedTitleOpacity(progress),
+      transform: [{ translateY: scrollChromeCollapsedTitleTranslateY(progress) }],
+    };
+  });
+
+  const toolbarStripStyle = useAnimatedStyle(() => {
+    const tintStart = Math.max(
+      0,
+      1 - HOME_COLLAPSED_HEADER_HEIGHT / expandedHeaderHeight.value,
+    );
+    return {
+      backgroundColor: interpolateColor(
+        homeChromeProgress.value,
+        [0, tintStart, 1],
+        [colors.HOME_HEADER_STRIP_CLEAR, colors.HOME_HEADER_STRIP_CLEAR, colors.HOME_HEADER_COLLAPSED_TINT],
+      ),
+    };
+  });
+
   return {
     scrollHandler,
     headerShellStyle,
     headerChromeSlideStyle,
+    largeTitleStyle,
+    collapsedTitleStyle,
+    toolbarStripStyle,
     onHeaderLayout,
     resetChrome,
   };
@@ -398,7 +436,7 @@ export const useHomeFloatingAskStyle = (tabBarHeight: number) => {
   const fabTextStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       homeChromeProgress.value,
-      [0, HOME_CHROME_FADE_OUT_END],
+      [0, SCROLL_CHROME_FADE_OUT_END],
       [1, 0],
       Extrapolation.CLAMP,
     ),

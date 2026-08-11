@@ -52,7 +52,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   CIRCULAR_CLICK_HEIGHT,
   CIRCULAR_CLICK_WIDTH,
+  SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM,
 } from '@/constants/layout';
+import { HOME_COLLAPSED_HEADER_HEIGHT } from '@/constants/homeChrome';
 import { screenChromeStyles } from '@/constants/screenChrome';
 
 const HomeScreen = () => {
@@ -64,7 +66,7 @@ const HomeScreen = () => {
   const feedScrollOffsetRef = useRef(0);
   const shouldRestoreFeedScrollRef = useRef(false);
   const hasLoadedFeedRef = useRef(false);
-  const { scrollHandler, headerShellStyle, headerChromeSlideStyle, onHeaderLayout, resetChrome } =
+  const { scrollHandler, headerShellStyle, headerChromeSlideStyle, largeTitleStyle, collapsedTitleStyle, toolbarStripStyle, onHeaderLayout, resetChrome } =
     useHomeScrollChrome();
   const { fabContainerStyle, fabTextStyle } = useHomeFloatingAskStyle(tabBarHeight);
   const setMenuCategories = useDrawerStore((state) => state.setMenuCategories);
@@ -531,7 +533,9 @@ const HomeScreen = () => {
             the list viewport grows and the content slides up glued to the
             shell's bottom edge — no gap can open at any progress, and a
             release settle can complete in either direction from any scroll
-            position. The list grows as the shell collapses.
+            position. The list grows as the shell collapses. The pinned toolbar
+            keeps the menu and chats buttons visible while a compact centered
+            title crossfades in (WhatsApp-style).
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
             <View
@@ -539,37 +543,12 @@ const HomeScreen = () => {
               onLayout={(event) => onHeaderLayout(event.nativeEvent.layout.height)}
             >
               <Animated.View style={headerChromeSlideStyle}>
-                <View style={screenChromeStyles.actionRow}>
-                  <View style={styles.headerSide}>
-                    <Pressable onPress={toggleDrawer} style={styles.menuBtn} accessibilityLabel="Open menu">
-                      <Ionicons name="menu" size={30} color={colors.PRIMARY} />
-                    </Pressable>
-                  </View>
-                  <View style={styles.headerCenter} />
-                  <View style={[styles.headerSide, styles.headerSideRight]}>
-                    <Pressable
-                      style={styles.chatIconBtn}
-                      onPress={() => router.push('/chats')}
-                      accessibilityLabel="Open chats"
-                    >
-                      <Ionicons name="chatbubble-ellipses-outline" size={26} color={colors.PRIMARY} />
-                      {unreadChatCount > 0 && (
-                        <View style={styles.chatBadge}>
-                          <Text style={styles.chatBadgeText}>
-                            {unreadChatCount > 99 ? '99+' : unreadChatCount}
-                          </Text>
-                        </View>
-                      )}
-                    </Pressable>
-                  </View>
-                </View>
-
-                <View style={screenChromeStyles.titleRow}>
+                <Animated.View style={[screenChromeStyles.titleRow, largeTitleStyle]}>
                   <ScreenTitle title={activeCategory.title} />
                   {categorySubtitle ? (
                     <Text style={screenChromeStyles.screenSubtitle}>{categorySubtitle}</Text>
                   ) : null}
-                </View>
+                </Animated.View>
 
                 {!isClosedCategory ? (
                   <Searchbar
@@ -659,6 +638,43 @@ const HomeScreen = () => {
               scrollEventThrottle={16}
             />
           </KeyboardAvoidingView>
+
+          <Animated.View
+            style={[styles.pinnedToolbar, toolbarStripStyle]}
+            pointerEvents="box-none"
+          >
+            <View style={[screenChromeStyles.actionRow, styles.pinnedToolbarRow]}>
+              <View style={styles.headerSide}>
+                <Pressable onPress={toggleDrawer} style={styles.menuBtn} accessibilityLabel="Open menu">
+                  <Ionicons name="menu" size={30} color={colors.PRIMARY} />
+                </Pressable>
+              </View>
+              <View style={styles.toolbarTitleSlot} pointerEvents="none">
+                <Animated.Text
+                  style={[screenChromeStyles.collapsedScrollTitle, collapsedTitleStyle]}
+                  numberOfLines={1}
+                >
+                  {activeCategory.title}
+                </Animated.Text>
+              </View>
+              <View style={[styles.headerSide, styles.headerSideRight]}>
+                <Pressable
+                  style={styles.chatIconBtn}
+                  onPress={() => router.push('/chats')}
+                  accessibilityLabel="Open chats"
+                >
+                  <Ionicons name="chatbubble-ellipses-outline" size={26} color={colors.PRIMARY} />
+                  {unreadChatCount > 0 && (
+                    <View style={styles.chatBadge}>
+                      <Text style={styles.chatBadgeText}>
+                        {unreadChatCount > 99 ? '99+' : unreadChatCount}
+                      </Text>
+                    </View>
+                  )}
+                </Pressable>
+              </View>
+            </View>
+          </Animated.View>
         </View>
       </TouchableWithoutFeedback>
 
@@ -682,8 +698,14 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.BG_WHITE },
-  screenBody: { flex: 1 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.BG_WHITE,
+  },
+  screenBody: {
+    flex: 1,
+    backgroundColor: colors.BG_WHITE,
+  },
   headerShell: {
     overflow: 'hidden',
     backgroundColor: colors.BG_WHITE,
@@ -692,9 +714,28 @@ const styles = StyleSheet.create({
   },
   headerMeasureWrap: {
     position: 'absolute',
+    top: SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM,
+    left: 0,
+    right: 0,
+  },
+  pinnedToolbar: {
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+    height: HOME_COLLAPSED_HEADER_HEIGHT,
+    zIndex: 3,
+    justifyContent: 'center',
+  },
+  pinnedToolbarRow: {
+    marginBottom: 0,
+  },
+  toolbarTitleSlot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+    minWidth: 0,
   },
   headerSide: {
     width: 72,
@@ -702,11 +743,6 @@ const styles = StyleSheet.create({
   },
   headerSideRight: {
     alignItems: 'flex-end',
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   searchBarPlacement: {
     marginHorizontal: 16,

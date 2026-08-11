@@ -1,35 +1,14 @@
-import { CIRCULAR_CLICK_HEIGHT, SCREEN_CHROME_ACTION_ROW_MARGIN_TOP } from './layout';
-import { fonts } from './fonts';
+import { SCROLL_CHROME_PINNED_TOOLBAR_HEIGHT } from './scrollChrome';
+
+export {
+  SCROLL_CHROME_COLLAPSED_TITLE_FADE_IN_END as CHATS_COLLAPSED_TITLE_FADE_IN_END,
+  SCROLL_CHROME_COLLAPSED_TITLE_FADE_IN_START as CHATS_COLLAPSED_TITLE_FADE_IN_START,
+  SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE as CHATS_COLLAPSED_TITLE_FONT_SIZE,
+  SCROLL_CHROME_FADE_OUT_END as CHATS_CHROME_FADE_OUT_END,
+  SCROLL_CHROME_SLIDE_END as CHATS_CHROME_SLIDE_END,
+} from './scrollChrome';
 
 export { HOME_SCROLL_BOTTOM_LOCK_THRESHOLD as CHATS_SCROLL_BOTTOM_LOCK_THRESHOLD } from './homeChrome';
 
-/** Bottom inset inside the pinned chats toolbar (below the circular buttons). */
-export const CHATS_PINNED_TOOLBAR_PADDING_BOTTOM = 4;
-
-/** Pinned toolbar height when the header is collapsed (back button + logo). */
-export const CHATS_COLLAPSED_HEADER_HEIGHT =
-  SCREEN_CHROME_ACTION_ROW_MARGIN_TOP +
-  CIRCULAR_CLICK_HEIGHT +
-  CHATS_PINNED_TOOLBAR_PADDING_BOTTOM;
-
-/** Compact nav-bar title when the large header title collapses (WhatsApp-style). */
-export const CHATS_COLLAPSED_TITLE_FONT_SIZE = fonts.FONT_SIZE_SMALL;
-
-/**
- * Scroll progress window where the compact toolbar title fades in while the
- * large header title slides away.
- */
-export const CHATS_COLLAPSED_TITLE_FADE_IN_START = 0.2;
-export const CHATS_COLLAPSED_TITLE_FADE_IN_END = 0.65;
-
-/**
- * Progress (0–1) at which header content opacity reaches zero.
- * Lower = fade completes earlier while slide/layout still finish gracefully.
- */
-export const CHATS_CHROME_FADE_OUT_END = 0.6;
-
-/**
- * Progress (0–1) at which header content slide is ~98% complete.
- * Slightly before full collapse so elements are off-screen once faded.
- */
-export const CHATS_CHROME_SLIDE_END = 0.85;
+/** Pinned toolbar height when the header is collapsed (back button row). */
+export const CHATS_COLLAPSED_HEADER_HEIGHT = SCROLL_CHROME_PINNED_TOOLBAR_HEIGHT;

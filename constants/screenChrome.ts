@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
 import { fonts } from './fonts';
+import { SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE } from './scrollChrome';
 import {
   SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM,
   SCREEN_CHROME_ACTION_ROW_MARGIN_TOP,
@@ -46,5 +47,12 @@ export const screenChromeStyles = StyleSheet.create({
     fontSize: fonts.FONT_SIZE_XS,
     color: colors.MEDIUM_GRAY,
     marginTop: 2,
+  },
+  /** Compact centered title in pinned scroll-chrome toolbars (Home, Chats). */
+  collapsedScrollTitle: {
+    fontFamily: fonts.FONT_FAMILY_BOLD,
+    fontSize: SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE,
+    color: colors.TEXT_DARK,
+    textAlign: 'center',
   },
 });

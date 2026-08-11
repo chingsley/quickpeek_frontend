@@ -1,23 +1,18 @@
-/** Logo-only header height when chrome is collapsed. */
-export const HOME_COLLAPSED_HEADER_HEIGHT = 48;
+import { SCROLL_CHROME_PINNED_TOOLBAR_HEIGHT } from './scrollChrome';
+
+export {
+  SCROLL_CHROME_FADE_OUT_END as HOME_CHROME_FADE_OUT_END,
+  SCROLL_CHROME_SLIDE_END as HOME_CHROME_SLIDE_END,
+} from './scrollChrome';
+
+/** Pinned toolbar height when the feed chrome is collapsed (menu + chats row). */
+export const HOME_COLLAPSED_HEADER_HEIGHT = SCROLL_CHROME_PINNED_TOOLBAR_HEIGHT;
 
 // NOTE: there is intentionally no fixed "collapse distance" constant. The
 // distance scrolled to fully hide the chrome equals the measured header swing
 // (expanded header height − HOME_COLLAPSED_HEADER_HEIGHT), so the header's
 // bottom edge tracks the list content 1:1 and never outruns the first card.
 // See useHomeScrollChrome.ts.
-
-/**
- * Progress (0–1) at which header/tab-bar opacity reaches zero.
- * Lower = fade completes earlier while slide/layout still finish gracefully.
- */
-export const HOME_CHROME_FADE_OUT_END = 0.4;
-
-/**
- * Progress (0–1) at which chrome slide is ~98% complete.
- * Slightly before full collapse so elements are off-screen once faded.
- */
-export const HOME_CHROME_SLIDE_END = 0.85;
 
 /** Collapsed FAB diameter. */
 export const HOME_FAB_COLLAPSED_SIZE = 52;
