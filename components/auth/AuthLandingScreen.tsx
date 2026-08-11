@@ -52,7 +52,7 @@ const AuthLandingScreen = () => {
               <View style={styles.logoBadge}>
                 <Image source={images.logo} style={styles.logo} resizeMode="contain" accessibilityElementsHidden />
               </View>
-              <Text style={styles.appName}>uickPeek</Text>
+              <Text style={styles.appName}>uickpeek</Text>
             </View>
           </View>
 

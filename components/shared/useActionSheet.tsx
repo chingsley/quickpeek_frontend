@@ -1,16 +1,32 @@
 import ActionSheet, { ActionSheetConfig } from '@/components/shared/ActionSheet';
-import React, { useCallback, useState } from 'react';
+import { runAfterOverlayDismiss } from '@/utils/runAfterOverlayDismiss';
+import React, { useCallback, useRef, useState } from 'react';
 
 /**
  * Holds the visible/config state for an ActionSheet so call sites read like
  * Alert.alert: `showActionSheet({ title, message, tone, buttons })` and
  * render `{actionSheet}` once near the screen root.
+ *
+ * Use `showActionSheetAfterDismiss` when another RN Modal (bottom sheet, menu,
+ * etc.) is closing — opening a second modal immediately leaves an invisible
+ * touch-blocking layer and freezes the app.
  */
 export const useActionSheet = () => {
   const [config, setConfig] = useState<ActionSheetConfig | null>(null);
+  const dismissCleanupRef = useRef<(() => void) | null>(null);
 
   const showActionSheet = useCallback((next: ActionSheetConfig) => setConfig(next), []);
-  const hideActionSheet = useCallback(() => setConfig(null), []);
+
+  const showActionSheetAfterDismiss = useCallback((next: ActionSheetConfig) => {
+    dismissCleanupRef.current?.();
+    dismissCleanupRef.current = runAfterOverlayDismiss(() => setConfig(next));
+  }, []);
+
+  const hideActionSheet = useCallback(() => {
+    dismissCleanupRef.current?.();
+    dismissCleanupRef.current = null;
+    setConfig(null);
+  }, []);
 
   const actionSheet = (
     <ActionSheet
@@ -23,5 +39,5 @@ export const useActionSheet = () => {
     />
   );
 
-  return { showActionSheet, hideActionSheet, actionSheet };
+  return { showActionSheet, showActionSheetAfterDismiss, hideActionSheet, actionSheet };
 };

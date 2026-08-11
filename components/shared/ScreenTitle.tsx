@@ -9,6 +9,12 @@ type ScreenTitleProps = {
   numberOfLines?: number;
 };
 
+/**
+ * Page title for full-screen routes. Always wrap in `screenChromeStyles.titleRow`
+ * (back-nav screens), `titleRowInset` (body already padded), or
+ * `titleRowStandalone` (tab screens). Vertical gap from the back/action row is
+ * `SCREEN_CHROME_BACK_TO_TITLE_GAP` — do not set marginTop on this component.
+ */
 export function ScreenTitle({ title, style, numberOfLines }: ScreenTitleProps) {
   return (
     <Text style={[styles.title, style]} numberOfLines={numberOfLines}>

@@ -107,8 +107,8 @@ const OverflowMenu = ({
     backdropOpacity.value = withTiming(0, {
       duration: BACKDROP_CLOSE_DURATION_MS,
       easing: BACKDROP_EASING,
-    }, (finished) => {
-      if (finished) runOnJS(finishClose)();
+    }, () => {
+      runOnJS(finishClose)();
     });
   }, [backdropOpacity, finishClose, menuProgress]);
 

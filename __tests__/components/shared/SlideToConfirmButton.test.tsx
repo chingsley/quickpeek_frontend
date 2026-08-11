@@ -5,7 +5,7 @@ import SlideToConfirmButton from '@/components/shared/SlideToConfirmButton';
 jest.mock('@expo/vector-icons/Ionicons', () => {
   const React = require('react');
   const { Text } = require('react-native');
-  return ({ name }: { name: string }) => React.createElement(Text, null, name);
+  return ({ name }: { name: string; }) => React.createElement(Text, null, name);
 });
 
 jest.mock('react-native-gesture-handler', () => {
@@ -23,7 +23,7 @@ jest.mock('react-native-gesture-handler', () => {
     Gesture: {
       Pan: () => ({ ...chain }),
     },
-    GestureDetector: ({ children }: { children: React.ReactNode }) =>
+    GestureDetector: ({ children }: { children: React.ReactNode; }) =>
       React.createElement(View, { testID: 'gesture-detector' }, children),
   };
 });

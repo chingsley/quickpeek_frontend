@@ -1,6 +1,5 @@
 import Searchbar from '@/components/Searchbar';
 import BackButton from '@/components/shared/BackButton';
-import OverflowMenuButton from '@/components/shared/OverflowMenuButton';
 import { ScreenTitle } from '@/components/shared/ScreenTitle';
 import ChatsListBottomSpacer from '@/components/ChatsListBottomSpacer';
 import { FilterTabletGroup } from '@/components/FilterTablet';
@@ -15,7 +14,7 @@ import {
 } from '@/constants/filterTablets';
 import { fonts } from '@/constants/fonts';
 import { screenChromeStyles } from '@/constants/screenChrome';
-import { SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM } from '@/constants/layout';
+import { SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM } from '@/constants/layout';
 import { useChatsScrollChrome } from '@/hooks/useChatsScrollChrome';
 import { getConversations } from '@/services/requests.services';
 import SocketService from '@/services/socket.services';
@@ -101,7 +100,7 @@ const ChatsScreen = () => {
   } = useChatsScrollChrome();
 
   // The toolbar row fades out with the chrome — once faded it must stop
-  // receiving touches so the invisible back/menu buttons don't swallow taps
+  // receiving touches so the invisible back button doesn't swallow taps
   // meant for the chat rows underneath.
   const [toolbarTouchEnabled, setToolbarTouchEnabled] = useState(true);
   useAnimatedReaction(
@@ -157,10 +156,6 @@ const ChatsScreen = () => {
       return next;
     });
   }, []);
-
-  const handleToolbarMenuPress = () => {
-    console.log('menu item in progress');
-  };
 
   useEffect(() => {
     resetChrome();
@@ -249,8 +244,8 @@ const ChatsScreen = () => {
             position. The footer spacer (ChatsListBottomSpacer) grows by the
             deficit between the header height and the list's scrollable
             distance, so the collapse works on short chat lists too without a
-            flicker loop. The pinned toolbar keeps the back and menu buttons
-            visible when collapsed; they fade out with the chrome (and stop
+            flicker loop. The pinned toolbar keeps the back button
+            visible when collapsed; it fades out with the chrome (and stops
             receiving touches once invisible).
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
@@ -307,13 +302,7 @@ const ChatsScreen = () => {
               style={[screenChromeStyles.actionRowInset, styles.toolbarRow, toolbarChromeFadeStyle]}
               pointerEvents={toolbarTouchEnabled ? 'auto' : 'none'}
             >
-              <View style={styles.toolbarSide}>
-                <BackButton />
-              </View>
-              <View style={styles.toolbarCenter} />
-              <View style={[styles.toolbarSide, styles.toolbarSideRight]}>
-                <OverflowMenuButton onPress={handleToolbarMenuPress} />
-              </View>
+              <BackButton />
             </Animated.View>
           </Animated.View>
         </View>
@@ -335,7 +324,8 @@ const styles = StyleSheet.create({
   },
   headerMeasureWrap: {
     position: 'absolute',
-    top: CHATS_COLLAPSED_HEADER_HEIGHT + SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM,
+    // Align with Home: titleRow marginTop supplies SCREEN_CHROME_BACK_TO_TITLE_GAP.
+    top: SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM,
     left: 0,
     right: 0,
   },
@@ -352,16 +342,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 0,
-  },
-  toolbarSide: {
-    width: 72,
-    zIndex: 1,
-  },
-  toolbarSideRight: {
-    alignItems: 'flex-end',
-  },
-  toolbarCenter: {
-    flex: 1,
   },
   searchBarPlacement: {
     marginHorizontal: CHATS_PAGE_GUTTER,

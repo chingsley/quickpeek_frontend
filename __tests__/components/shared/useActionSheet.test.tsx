@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useActionSheet } from '@/components/shared/useActionSheet';
@@ -29,6 +29,33 @@ const Host = () => {
 };
 
 describe('useActionSheet', () => {
+  it('opens the sheet after dismiss when using showActionSheetAfterDismiss', () => {
+    jest.useFakeTimers();
+    const HostAfterDismiss = () => {
+      const { showActionSheetAfterDismiss, actionSheet } = useActionSheet();
+      return (
+        <View>
+          <Pressable
+            testID="open-after-dismiss"
+            onPress={() => showActionSheetAfterDismiss({ title: 'Deferred' })}
+          >
+            <Text>open</Text>
+          </Pressable>
+          {actionSheet}
+        </View>
+      );
+    };
+
+    render(<HostAfterDismiss />);
+    fireEvent.press(screen.getByTestId('open-after-dismiss'));
+    expect(screen.queryByTestId('action-sheet')).toBeNull();
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+    expect(screen.getByText('Deferred')).toBeTruthy();
+    jest.useRealTimers();
+  });
   it('shows, updates and hides the sheet', () => {
     render(<Host />);
     expect(screen.queryByTestId('action-sheet')).toBeNull();

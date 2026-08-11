@@ -44,6 +44,7 @@ import { LINKED_FROM_CHAT_PARAM, openLinkedChat } from '@/utils/linkedScreenNavi
 import { normalizeRouteParam } from '@/utils/routeParams';
 import { getMainStatusIcons } from '@/utils/questionStatus';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { runAfterOverlayDismiss } from '@/utils/runAfterOverlayDismiss';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Animated, {
@@ -493,21 +494,27 @@ const QuestionDetail = () => {
     const proceed = async () => {
       try {
         await acceptRequest(requestId);
-        showActionSheet({
-          title: 'Accepted',
-          message: 'You can now chat with this responder.',
-          tone: 'success',
-          buttons: [
-            { label: 'Open chat', onPress: () => openChat(requestId) },
-            { label: 'OK', onPress: () => load(), role: 'secondary' },
-          ],
+        setProfileModalVisible(false);
+        runAfterOverlayDismiss(() => {
+          showActionSheet({
+            title: 'Accepted',
+            message: 'You can now chat with this responder.',
+            tone: 'success',
+            buttons: [
+              { label: 'Open chat', onPress: () => openChat(requestId) },
+              { label: 'OK', onPress: () => load(), role: 'secondary' },
+            ],
+          });
         });
         load();
       } catch (error: any) {
-        showActionSheet({
-          title: 'Error',
-          message: error?.response?.data?.error || 'Could not accept request.',
-          tone: 'error',
+        setProfileModalVisible(false);
+        runAfterOverlayDismiss(() => {
+          showActionSheet({
+            title: 'Error',
+            message: error?.response?.data?.error || 'Could not accept request.',
+            tone: 'error',
+          });
         });
       }
     };
@@ -546,10 +553,13 @@ const QuestionDetail = () => {
       setRejectModalVisible(false);
       load();
     } catch (error: any) {
-      showActionSheet({
-        title: 'Error',
-        message: error?.response?.data?.error || 'Could not decline request.',
-        tone: 'error',
+      setRejectModalVisible(false);
+      runAfterOverlayDismiss(() => {
+        showActionSheet({
+          title: 'Error',
+          message: error?.response?.data?.error || 'Could not decline request.',
+          tone: 'error',
+        });
       });
     }
   };
@@ -570,10 +580,13 @@ const QuestionDetail = () => {
       setCloseModalVisible(false);
       router.back();
     } catch (error: any) {
-      showActionSheet({
-        title: 'Error',
-        message: error?.response?.data?.error || 'Could not close question.',
-        tone: 'error',
+      setCloseModalVisible(false);
+      runAfterOverlayDismiss(() => {
+        showActionSheet({
+          title: 'Error',
+          message: error?.response?.data?.error || 'Could not close question.',
+          tone: 'error',
+        });
       });
     } finally {
       setClosing(false);

@@ -19,14 +19,22 @@ export const BORDER_RADIUS_PILL = 100;
 
 /**
  * Shared vertical rhythm for Home + Chats screen headers.
- * Gap from the action row (menu/back) to the page title =
- * `SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM` + `SCREEN_CHROME_TITLE_ROW_MARGIN_TOP`.
+ * Gap from the action row (menu/back) to the page title is
+ * {@link SCREEN_CHROME_BACK_TO_TITLE_GAP} (canonical: Ask a question).
  */
 export const SCREEN_CHROME_HORIZONTAL_PADDING = 16;
 export const SCREEN_CHROME_ACTION_ROW_MARGIN_TOP = 8;
-export const SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM = 20;
-export const SCREEN_CHROME_TITLE_ROW_MARGIN_TOP = 8;
+/** Canonical vertical gap from the back/action row to the page title. */
+export const SCREEN_CHROME_BACK_TO_TITLE_GAP = 12;
+export const SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM = 0;
+export const SCREEN_CHROME_TITLE_ROW_MARGIN_TOP = SCREEN_CHROME_BACK_TO_TITLE_GAP;
 export const SCREEN_CHROME_TITLE_ROW_MARGIN_BOTTOM = 20;
+/** Y offset to the bottom edge of the back/menu control in the action row. */
+export const SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM =
+  SCREEN_CHROME_ACTION_ROW_MARGIN_TOP + CIRCULAR_CLICK_HEIGHT;
+/** Page title top offset on screens without an action row (matches Home/Chats title Y). */
+export const SCREEN_CHROME_TITLE_TOP_WITHOUT_ACTION_ROW =
+  SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM + SCREEN_CHROME_BACK_TO_TITLE_GAP;
 /** Question-detail meta row spacing below the page title. */
 export const SCREEN_CHROME_DETAIL_META_MARGIN_BOTTOM = 16;
 /** Question-detail status row spacing above the info banner. */

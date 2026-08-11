@@ -152,11 +152,11 @@ const SlideToConfirmButton = ({
       ? 0
       : maxOffset.value > 0
         ? interpolate(
-            SLIDE_THUMB_WIDTH + dragOffset.value,
-            [SLIDE_THUMB_WIDTH, SLIDE_THUMB_WIDTH + maxOffset.value * 0.4],
-            [1, 0],
-            Extrapolation.CLAMP,
-          )
+          SLIDE_THUMB_WIDTH + dragOffset.value,
+          [SLIDE_THUMB_WIDTH, SLIDE_THUMB_WIDTH + maxOffset.value * 0.4],
+          [1, 0],
+          Extrapolation.CLAMP,
+        )
         : 1,
   }));
 
@@ -164,11 +164,11 @@ const SlideToConfirmButton = ({
     opacity: isLocked.value
       ? 0
       : interpolate(
-          SLIDE_THUMB_WIDTH + dragOffset.value,
-          [SLIDE_THUMB_WIDTH + 16, SLIDE_THUMB_WIDTH + 80],
-          [0, 1],
-          Extrapolation.CLAMP,
-        ),
+        SLIDE_THUMB_WIDTH + dragOffset.value,
+        [SLIDE_THUMB_WIDTH + 16, SLIDE_THUMB_WIDTH + 80],
+        [0, 1],
+        Extrapolation.CLAMP,
+      ),
   }));
 
   const arrowAnimatedStyle = useAnimatedStyle(() => {

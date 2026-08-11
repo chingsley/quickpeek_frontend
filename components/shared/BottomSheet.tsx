@@ -38,6 +38,8 @@ type BottomSheetProps = {
 const BACKDROP_EASING = Easing.out(Easing.quad);
 const SHEET_OPEN_EASING = Easing.bezier(0.22, 1, 0.36, 1);
 const SHEET_CLOSE_EASING = Easing.bezier(0.4, 0, 0.2, 1);
+const CLOSE_UNMOUNT_FALLBACK_MS =
+  BOTTOM_SHEET_CLOSE_DURATION_MS + BOTTOM_SHEET_BACKDROP_DURATION_MS + 80;
 
 const BottomSheet = ({
   visible,
@@ -54,15 +56,28 @@ const BottomSheet = ({
   const animationTokenRef = useRef(0);
   const mountedRef = useRef(visible);
   const openFrameRef = useRef<number | null>(null);
+  const closeFallbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onClosedRef = useRef(onClosed);
   onClosedRef.current = onClosed;
 
-  const finishClose = useCallback((token: number) => {
-    if (token !== animationTokenRef.current) return;
-    mountedRef.current = false;
-    setMounted(false);
-    onClosedRef.current?.();
+  const clearCloseFallback = useCallback(() => {
+    if (closeFallbackTimeoutRef.current !== null) {
+      clearTimeout(closeFallbackTimeoutRef.current);
+      closeFallbackTimeoutRef.current = null;
+    }
   }, []);
+
+  const finishClose = useCallback(
+    (token: number) => {
+      if (token !== animationTokenRef.current) return;
+      clearCloseFallback();
+      if (!mountedRef.current) return;
+      mountedRef.current = false;
+      setMounted(false);
+      onClosedRef.current?.();
+    },
+    [clearCloseFallback],
+  );
 
   useEffect(() => {
     const token = ++animationTokenRef.current;
@@ -72,6 +87,7 @@ const BottomSheet = ({
       cancelAnimationFrame(openFrameRef.current);
       openFrameRef.current = null;
     }
+    clearCloseFallback();
 
     cancelAnimation(backdropOpacity);
     cancelAnimation(sheetTranslateY);
@@ -116,6 +132,10 @@ const BottomSheet = ({
       return;
     }
 
+    closeFallbackTimeoutRef.current = setTimeout(() => {
+      finishClose(token);
+    }, CLOSE_UNMOUNT_FALLBACK_MS);
+
     backdropOpacity.value = withTiming(0, {
       duration: BOTTOM_SHEET_BACKDROP_DURATION_MS,
       easing: BACKDROP_EASING,
@@ -126,13 +146,20 @@ const BottomSheet = ({
         duration: BOTTOM_SHEET_CLOSE_DURATION_MS,
         easing: SHEET_CLOSE_EASING,
       },
-      (finished) => {
-        if (finished) {
-          runOnJS(finishClose)(token);
-        }
+      () => {
+        runOnJS(finishClose)(token);
       },
     );
-  }, [backdropOpacity, finishClose, sheetTranslateY, visible, windowHeight]);
+
+    return clearCloseFallback;
+  }, [
+    backdropOpacity,
+    clearCloseFallback,
+    finishClose,
+    sheetTranslateY,
+    visible,
+    windowHeight,
+  ]);
 
   const backdropAnimatedStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,

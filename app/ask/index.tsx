@@ -9,6 +9,8 @@ import QuestionPublishedSheet from '@/components/ask/QuestionPublishedSheet';
 import { colors } from '@/constants/colors';
 import { formFieldLabelStyles, FORM_FIELD_INPUT_PADDING_HORIZONTAL } from '@/constants/formField';
 import { fonts } from '@/constants/fonts';
+import { SCREEN_CHROME_HORIZONTAL_PADDING } from '@/constants/layout';
+import { screenChromeStyles } from '@/constants/screenChrome';
 import { SWITCH_APPEARANCE_PROPS } from '@/constants/switch';
 import { PRICE_INPUT_PROPS } from '@/constants/textInput';
 import { createQuestion } from '@/services/questions.services';
@@ -162,12 +164,15 @@ const AskScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAwareScreen contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <View style={screenChromeStyles.actionRow}>
         <BackButton />
-        <ScreenTitle title="Ask a question" style={styles.pageTitleSpacing} />
-        <Text style={styles.subtitle}>Post a question to responders.</Text>
-
+      </View>
+      <View style={screenChromeStyles.titleRow}>
+        <ScreenTitle title="Ask a question" />
+        <Text style={screenChromeStyles.screenSubtitle}>Post a question to responders.</Text>
+      </View>
+      <KeyboardAwareScreen contentContainerStyle={styles.scrollContent}>
         <FormField
           label="Title"
           value={title}
@@ -293,13 +298,9 @@ export default AskScreen;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.BG_WHITE },
-  scrollContent: { paddingHorizontal: 24, paddingVertical: 20, paddingBottom: 40 },
-  pageTitleSpacing: { marginTop: 12, marginBottom: 8 },
-  subtitle: {
-    fontFamily: 'roboto',
-    fontSize: fonts.FONT_SIZE_SMALL,
-    color: colors.MEDIUM_GRAY,
-    marginBottom: 24
+  scrollContent: {
+    paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING,
+    paddingBottom: 40,
   },
   locationField: {
     flexDirection: 'row',

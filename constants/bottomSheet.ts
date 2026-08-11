@@ -9,3 +9,9 @@ export const BOTTOM_SHEET_CLOSE_DURATION_MS = 300;
  * Android needs extra time for the native modal layer to release.
  */
 export const OVERLAY_DISMISS_HANDOFF_MS = 50;
+/**
+ * Minimum wait after starting a BottomSheet close before opening another Modal.
+ * Matches {@link BOTTOM_SHEET_CLOSE_DURATION_MS} (sheet slide) plus a small buffer.
+ */
+export const BOTTOM_SHEET_DISMISS_HANDOFF_MS =
+  BOTTOM_SHEET_CLOSE_DURATION_MS + OVERLAY_DISMISS_HANDOFF_MS;

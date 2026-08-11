@@ -44,7 +44,8 @@ const ReviewModal = ({
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const { showActionSheet, actionSheet } = useActionSheet();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { showActionSheetAfterDismiss, actionSheet } = useActionSheet();
   const { remaining, ended } = useReviewWindowCountdown({
     endsAt: reviewWindowEndsAt,
     windowOpen: reviewWindowOpen,
@@ -55,32 +56,31 @@ const ReviewModal = ({
   useEffect(() => {
     if (visible) {
       setStars(initialStars ?? 0);
+      setSubmitError(null);
       return;
     }
     setStars(0);
     setComment('');
     setSubmitting(false);
+    setSubmitError(null);
   }, [visible, initialStars]);
 
   const handleSubmit = async () => {
     if (stars === 0 || submitting || windowClosed) return;
     setSubmitting(true);
+    setSubmitError(null);
     try {
       const result = await submitReview(requestId, stars, comment.trim() || undefined);
-      showActionSheet({
+      onSubmitted();
+      showActionSheetAfterDismiss({
         title: 'Review submitted',
         message: result.revealed
           ? 'Your review is now visible on their profile.'
           : 'Your review is hidden until they review you or the review window closes.',
         tone: 'success',
       });
-      onSubmitted();
     } catch (err: any) {
-      showActionSheet({
-        title: 'Error',
-        message: err?.response?.data?.error || 'Could not submit review.',
-        tone: 'error',
-      });
+      setSubmitError(err?.response?.data?.error || 'Could not submit review.');
     } finally {
       setSubmitting(false);
     }
@@ -101,6 +101,8 @@ const ReviewModal = ({
           {remaining && <Text style={styles.countdown}>{remaining}</Text>}
         </>
       )}
+
+      {submitError ? <Text style={styles.errorText}>{submitError}</Text> : null}
 
       <View style={styles.starRow}>
         {[1, 2, 3, 4, 5].map((value) => (
@@ -186,6 +188,12 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GRAY,
     lineHeight: 20,
     marginBottom: 20,
+  },
+  errorText: {
+    fontFamily: fonts.FONT_FAMILY_REGULAR,
+    fontSize: fonts.FONT_SIZE_SMALL,
+    color: colors.RED,
+    marginBottom: 12,
   },
   starRow: {
     flexDirection: 'row',

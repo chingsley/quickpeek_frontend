@@ -37,7 +37,7 @@ const SettingsBottomSheet = () => {
         </Pressable>
       </View>
 
-      <SettingsPanel showTitle={false} />
+      <SettingsPanel />
     </BottomSheet>
   );
 };

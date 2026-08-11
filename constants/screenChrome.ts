@@ -7,6 +7,7 @@ import {
   SCREEN_CHROME_HORIZONTAL_PADDING,
   SCREEN_CHROME_TITLE_ROW_MARGIN_BOTTOM,
   SCREEN_CHROME_TITLE_ROW_MARGIN_TOP,
+  SCREEN_CHROME_TITLE_TOP_WITHOUT_ACTION_ROW,
 } from './layout';
 
 /** Shared header chrome: action row (back/menu) + page title spacing. */
@@ -31,6 +32,12 @@ export const screenChromeStyles = StyleSheet.create({
   /** Title vertical rhythm when the parent already applies page horizontal padding. */
   titleRowInset: {
     marginTop: SCREEN_CHROME_TITLE_ROW_MARGIN_TOP,
+    marginBottom: SCREEN_CHROME_TITLE_ROW_MARGIN_BOTTOM,
+  },
+  /** Tab / standalone screens with no action row — title aligns with Home/Chats. */
+  titleRowStandalone: {
+    paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING,
+    marginTop: SCREEN_CHROME_TITLE_TOP_WITHOUT_ACTION_ROW,
     marginBottom: SCREEN_CHROME_TITLE_ROW_MARGIN_BOTTOM,
   },
   /** Helper line under `ScreenTitle` (Home category subtitle, Wallet, etc.). */

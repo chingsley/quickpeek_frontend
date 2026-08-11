@@ -1,6 +1,5 @@
 import CustomButton from '@/components/shared/CustomButton';
 import { useActionSheet } from '@/components/shared/useActionSheet';
-import { ScreenTitle } from '@/components/shared/ScreenTitle';
 import StarRating from '@/components/StarRating';
 import UserAvatar from '@/components/UserAvatar';
 import { colors } from '@/constants/colors';
@@ -24,12 +23,8 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-type Props = {
-  showTitle?: boolean;
-};
-
-const SettingsPanel = ({ showTitle = true }: Props) => {
-  const { showActionSheet, actionSheet } = useActionSheet();
+const SettingsPanel = () => {
+  const { showActionSheetAfterDismiss, actionSheet } = useActionSheet();
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const updateAuthUser = useAuthStore((state) => state.updateUser);
@@ -68,7 +63,7 @@ const SettingsPanel = ({ showTitle = true }: Props) => {
     try {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        showActionSheet({
+        showActionSheetAfterDismiss({
           title: 'Permission needed',
           message: 'Allow photo library access to update your profile picture.',
           tone: 'info',
@@ -89,12 +84,12 @@ const SettingsPanel = ({ showTitle = true }: Props) => {
       const updated = await uploadProfileImageAction(result.assets[0].uri);
       if (updated) {
         updateAuthUser({ profileImageUrl: updated.profileImageUrl ?? null });
-        showActionSheet({ title: 'Updated', message: 'Your profile picture has been updated.', tone: 'success' });
+        showActionSheetAfterDismiss({ title: 'Updated', message: 'Your profile picture has been updated.', tone: 'success' });
       } else {
-        showActionSheet({ title: 'Error', message: 'Could not update your profile picture.', tone: 'error' });
+        showActionSheetAfterDismiss({ title: 'Error', message: 'Could not update your profile picture.', tone: 'error' });
       }
     } catch {
-      showActionSheet({ title: 'Error', message: 'Could not update your profile picture.', tone: 'error' });
+      showActionSheetAfterDismiss({ title: 'Error', message: 'Could not update your profile picture.', tone: 'error' });
     } finally {
       setUploadingImage(false);
     }
@@ -109,9 +104,9 @@ const SettingsPanel = ({ showTitle = true }: Props) => {
     });
     if (updated) {
       setIsEditing(false);
-      showActionSheet({ title: 'Saved', message: 'Your profile has been updated.', tone: 'success' });
+      showActionSheetAfterDismiss({ title: 'Saved', message: 'Your profile has been updated.', tone: 'success' });
     } else {
-      showActionSheet({ title: 'Error', message: 'Could not update your profile.', tone: 'error' });
+      showActionSheetAfterDismiss({ title: 'Error', message: 'Could not update your profile.', tone: 'error' });
     }
   };
 
@@ -150,8 +145,6 @@ const SettingsPanel = ({ showTitle = true }: Props) => {
       keyboardShouldPersistTaps="handled"
       bottomOffset={24}
     >
-      {showTitle && <ScreenTitle title="Settings" style={styles.pageTitleSpacing} />}
-
       <Text style={styles.groupLabel}>Profile</Text>
       <View style={styles.groupCard}>
         <TouchableOpacity style={styles.rowItem} onPress={() => setIsEditing((v) => !v)} activeOpacity={0.8}>
@@ -269,10 +262,6 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  pageTitleSpacing: {
-    marginBottom: 20,
-    textAlign: 'center',
   },
   groupLabel: {
     fontFamily: 'roboto-medium',

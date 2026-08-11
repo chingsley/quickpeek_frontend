@@ -11,6 +11,7 @@ import CustomButton from '@/components/shared/CustomButton';
 import OverflowMenu, { OverflowMenuItem } from '@/components/shared/OverflowMenu';
 import BottomSheet from '@/components/shared/BottomSheet';
 import { useActionSheet } from '@/components/shared/useActionSheet';
+import { runAfterOverlayDismiss } from '@/utils/runAfterOverlayDismiss';
 import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
 import { BORDER_RADIUS_INPUT, CHAT_AVATAR_SIZE } from '@/constants/layout';
@@ -330,10 +331,13 @@ const ChatScreen = () => {
         setProfileVisible(false);
         await loadThread();
       } catch (err: any) {
-        showActionSheet({
-          title: 'Error',
-          message: err?.response?.data?.error || 'Could not accept request.',
-          tone: 'error',
+        setProfileVisible(false);
+        runAfterOverlayDismiss(() => {
+          showActionSheet({
+            title: 'Error',
+            message: err?.response?.data?.error || 'Could not accept request.',
+            tone: 'error',
+          });
         });
       } finally {
         setAccepting(false);
@@ -364,10 +368,13 @@ const ChatScreen = () => {
         await proceed();
       }
     } catch (err: any) {
-      showActionSheet({
-        title: 'Error',
-        message: err?.response?.data?.error || 'Could not accept request.',
-        tone: 'error',
+      setProfileVisible(false);
+      runAfterOverlayDismiss(() => {
+        showActionSheet({
+          title: 'Error',
+          message: err?.response?.data?.error || 'Could not accept request.',
+          tone: 'error',
+        });
       });
     }
   };
@@ -383,10 +390,13 @@ const ChatScreen = () => {
       setProfileVisible(false);
       await loadThread();
     } catch (err: any) {
-      showActionSheet({
-        title: 'Error',
-        message: err?.response?.data?.error || 'Could not decline request.',
-        tone: 'error',
+      setRejectModalVisible(false);
+      runAfterOverlayDismiss(() => {
+        showActionSheet({
+          title: 'Error',
+          message: err?.response?.data?.error || 'Could not decline request.',
+          tone: 'error',
+        });
       });
     } finally {
       setRejecting(false);
