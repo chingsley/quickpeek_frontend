@@ -1,5 +1,4 @@
 import { colors } from '@/constants/colors';
-import { fonts } from '@/constants/fonts';
 import { CIRCULAR_CLICK_HEIGHT, CIRCULAR_CLICK_WIDTH } from '@/constants/layout';
 import { screenChromeStyles } from '@/constants/screenChrome';
 import { useDrawerStore } from '@/store/drawer.store';
@@ -47,12 +46,14 @@ const HomePinnedToolbar = ({
           </Animated.Text>
         </View>
         <View style={[styles.headerSide, styles.headerSideRight]}>
-          <Pressable
-            style={[styles.toolbarIconBtn, styles.chatIconBtn]}
-            onPress={() => router.push('/chats')}
-            accessibilityLabel="Open chats"
-          >
-            <Ionicons name="chatbubble-ellipses-outline" size={26} color={colors.PRIMARY} />
+          <View style={styles.chatIconWrap}>
+            <Pressable
+              style={[styles.toolbarIconBtn, styles.chatIconBtn]}
+              onPress={() => router.push('/chats')}
+              accessibilityLabel="Open chats"
+            >
+              <Ionicons name="chatbubble-ellipses-outline" size={26} color={colors.PRIMARY} />
+            </Pressable>
             {unreadChatCount > 0 ? (
               <View style={styles.chatBadge}>
                 <Text style={styles.chatBadgeText}>
@@ -60,7 +61,7 @@ const HomePinnedToolbar = ({
                 </Text>
               </View>
             ) : null}
-          </Pressable>
+          </View>
         </View>
       </View>
     </Animated.View>
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
   headerSide: {
     width: 72,
     zIndex: 1,
+    overflow: 'visible',
   },
   headerSideRight: {
     alignItems: 'flex-end',
@@ -101,11 +103,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: CIRCULAR_CLICK_WIDTH / 2,
   },
-  chatIconBtn: { position: 'relative', borderWidth: 0 },
+  chatIconWrap: {
+    width: CIRCULAR_CLICK_WIDTH,
+    height: CIRCULAR_CLICK_HEIGHT,
+    position: 'relative',
+    overflow: 'visible',
+  },
+  chatIconBtn: { borderWidth: 0 },
   chatBadge: {
     position: 'absolute',
-    top: -2,
-    right: -4,
+    top: 2,
+    right: 2,
     minWidth: 18,
     height: 18,
     paddingHorizontal: 4,
@@ -113,10 +121,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.RED,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2,
   },
   chatBadgeText: {
     color: colors.BG_WHITE,
     fontSize: 11,
     fontWeight: 'bold',
+    lineHeight: 13,
   },
 });
