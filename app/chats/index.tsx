@@ -16,7 +16,8 @@ import {
 } from '@/constants/filterTablets';
 import { fonts } from '@/constants/fonts';
 import { screenChromeStyles } from '@/constants/screenChrome';
-import { SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM, CIRCULAR_CLICK_WIDTH } from '@/constants/layout';
+import { SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP } from '@/constants/scrollChrome';
+import { CIRCULAR_CLICK_HEIGHT, CIRCULAR_CLICK_WIDTH } from '@/constants/layout';
 import { useChatsScrollChrome } from '@/hooks/useChatsScrollChrome';
 import { getConversations } from '@/services/requests.services';
 import SocketService from '@/services/socket.services';
@@ -35,7 +36,7 @@ import {
 } from 'react-native';
 import { KeyboardController } from 'react-native-keyboard-controller';
 import Animated from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CHAT_LIST_AVATAR_SIZE = 48;
 /** Shared horizontal inset for Chats header, search, and list rows. */
@@ -85,6 +86,7 @@ const matchesFilters = (item: TConversation, activeFilters: Set<ChatFilterKey>):
 
 const ChatsScreen = () => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const listRef = useRef<Animated.FlatList<TConversation>>(null);
   const [loading, setLoading] = useState(true);
   const [conversations, setConversations] = useState<TConversation[]>([]);
@@ -223,10 +225,22 @@ const ChatsScreen = () => {
     );
   };
 
+  const pinnedToolbarHeight = insets.top + CHATS_COLLAPSED_HEADER_HEIGHT;
+  const headerContentTop =
+    insets.top + SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP + CIRCULAR_CLICK_HEIGHT;
+
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+    <View style={styles.safeArea}>
       <TouchableWithoutFeedback accessible={false} onPress={() => KeyboardController.dismiss()}>
-        <View style={styles.screenBody}>
+        <View
+          style={[
+            styles.screenBody,
+            {
+              paddingLeft: insets.left,
+              paddingRight: insets.right,
+            },
+          ]}
+        >
           {/*
             Header shell is in normal flow ABOVE the list: as it collapses,
             the list viewport grows and the content slides up glued to the
@@ -240,8 +254,8 @@ const ChatsScreen = () => {
           */}
           <Animated.View style={[styles.headerShell, headerShellStyle]}>
             <View
-              style={styles.headerMeasureWrap}
-              onLayout={(event) => onHeaderLayout(event.nativeEvent.layout.height)}
+              style={[styles.headerMeasureWrap, { top: headerContentTop }]}
+              onLayout={(event) => onHeaderLayout(event.nativeEvent.layout.height, insets.top)}
             >
               <Animated.View style={headerChromeSlideStyle}>
                 <Animated.View style={[screenChromeStyles.titleRow, largeTitleStyle]}>
@@ -285,11 +299,17 @@ const ChatsScreen = () => {
           />
 
           <Animated.View
-            style={[styles.pinnedToolbar, toolbarStripStyle]}
+            style={[
+              styles.pinnedToolbar,
+              { height: pinnedToolbarHeight },
+              toolbarStripStyle,
+            ]}
             pointerEvents="box-none"
           >
-            <View style={[screenChromeStyles.actionRowInset, styles.toolbarRow]}>
-              <BackButton />
+            <View style={screenChromeStyles.pinnedActionRow}>
+              <View style={styles.headerSide}>
+                <BackButton />
+              </View>
               <View style={styles.toolbarTitleSlot} pointerEvents="none">
                 <Animated.Text
                   style={[screenChromeStyles.collapsedScrollTitle, collapsedTitleStyle]}
@@ -298,12 +318,14 @@ const ChatsScreen = () => {
                   Chats
                 </Animated.Text>
               </View>
-              <View style={styles.toolbarSideSpacer} />
+              <View style={[styles.headerSide, styles.headerSideRight]}>
+                <View style={styles.toolbarSideSpacer} />
+              </View>
             </View>
           </Animated.View>
         </View>
       </TouchableWithoutFeedback>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -311,7 +333,7 @@ export default ChatsScreen;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.BG_WHITE },
-  screenBody: { flex: 1 },
+  screenBody: { flex: 1, backgroundColor: colors.BG_WHITE },
   headerShell: {
     overflow: 'hidden',
     backgroundColor: colors.BG_WHITE,
@@ -320,8 +342,6 @@ const styles = StyleSheet.create({
   },
   headerMeasureWrap: {
     position: 'absolute',
-    // Align with Home: titleRow marginTop supplies SCREEN_CHROME_BACK_TO_TITLE_GAP.
-    top: SCREEN_CHROME_ACTION_ROW_CONTENT_BOTTOM,
     left: 0,
     right: 0,
   },
@@ -330,20 +350,22 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: CHATS_COLLAPSED_HEADER_HEIGHT,
     zIndex: 3,
-    justifyContent: 'center',
-  },
-  toolbarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 0,
+    justifyContent: 'flex-end',
   },
   toolbarTitleSlot: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 8,
+    minWidth: 0,
+  },
+  headerSide: {
+    width: 72,
+    zIndex: 1,
+  },
+  headerSideRight: {
+    alignItems: 'flex-end',
   },
   toolbarSideSpacer: {
     width: CIRCULAR_CLICK_WIDTH,

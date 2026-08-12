@@ -1,12 +1,15 @@
-import { CIRCULAR_CLICK_HEIGHT, SCREEN_CHROME_ACTION_ROW_MARGIN_TOP } from './layout';
+import { CIRCULAR_CLICK_HEIGHT } from './layout';
 import { fonts } from './fonts';
 
+/** Top inset for menu/back row inside the pinned scroll-chrome toolbar. */
+export const SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP = 0;
+
 /** Bottom inset inside a pinned scroll-chrome toolbar. */
-export const SCROLL_CHROME_PINNED_TOOLBAR_PADDING_BOTTOM = 4;
+export const SCROLL_CHROME_PINNED_TOOLBAR_PADDING_BOTTOM = 2;
 
 /** Height of the pinned toolbar overlay (menu/back row) on Home and Chats. */
 export const SCROLL_CHROME_PINNED_TOOLBAR_HEIGHT =
-  SCREEN_CHROME_ACTION_ROW_MARGIN_TOP +
+  SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP +
   CIRCULAR_CLICK_HEIGHT +
   SCROLL_CHROME_PINNED_TOOLBAR_PADDING_BOTTOM;
 
@@ -17,7 +20,7 @@ export const SCROLL_CHROME_FADE_OUT_END = 0.6;
 export const SCROLL_CHROME_SLIDE_END = 0.85;
 
 /** Compact nav-bar title when the large header title collapses (WhatsApp-style). */
-export const SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE = fonts.FONT_SIZE_SMALL;
+export const SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE = fonts.FONT_SIZE_XL2;
 
 /** Scroll progress window where the compact toolbar title fades in. */
 export const SCROLL_CHROME_COLLAPSED_TITLE_FADE_IN_START = 0.2;

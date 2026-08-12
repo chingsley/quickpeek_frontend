@@ -57,7 +57,7 @@ export const colors = {
   // Overlays, shadows & utility
   TRANSPARENT: 'transparent',
   /** Tint of the collapsed Home header strip; ~0.6 opacity so cards scroll visibly underneath. */
-  HOME_HEADER_COLLAPSED_TINT: 'rgba(255, 255, 255, 0.6)',
+  HOME_HEADER_COLLAPSED_TINT: 'rgba(255, 255, 255, 1)',
   /** Fully clear starting point for the header strip's tint fade (same white as the tint at 0 alpha). */
   HOME_HEADER_STRIP_CLEAR: 'rgba(255, 255, 255, 0)',
   BACKDROP_DARK: 'rgba(0, 0, 0, 0.4)',

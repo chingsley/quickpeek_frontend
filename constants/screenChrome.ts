@@ -1,7 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
 import { fonts } from './fonts';
-import { SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE } from './scrollChrome';
+import {
+  SCROLL_CHROME_COLLAPSED_TITLE_FONT_SIZE,
+  SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP,
+  SCROLL_CHROME_PINNED_TOOLBAR_PADDING_BOTTOM,
+} from './scrollChrome';
 import {
   SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM,
   SCREEN_CHROME_ACTION_ROW_MARGIN_TOP,
@@ -24,6 +28,15 @@ export const screenChromeStyles = StyleSheet.create({
   actionRowInset: {
     paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING,
     marginTop: SCREEN_CHROME_ACTION_ROW_MARGIN_TOP,
+  },
+  /** Pinned scroll-chrome toolbar row (Home menu/chats, Chats back). */
+  pinnedActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING,
+    marginTop: SCROLL_CHROME_PINNED_ACTION_ROW_MARGIN_TOP,
+    marginBottom: SCREEN_CHROME_ACTION_ROW_MARGIN_BOTTOM,
+    paddingBottom: SCROLL_CHROME_PINNED_TOOLBAR_PADDING_BOTTOM,
   },
   titleRow: {
     paddingHorizontal: SCREEN_CHROME_HORIZONTAL_PADDING,

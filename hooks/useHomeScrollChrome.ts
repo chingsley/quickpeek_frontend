@@ -266,9 +266,9 @@ export const useHomeScrollChrome = () => {
   );
 
   const onHeaderLayout = useCallback(
-    (slideHeight: number) => {
-      const total = slideHeight + HOME_COLLAPSED_HEADER_HEIGHT;
-      if (total > HOME_COLLAPSED_HEADER_HEIGHT) {
+    (slideHeight: number, statusBarInset: number) => {
+      const total = slideHeight + HOME_COLLAPSED_HEADER_HEIGHT + statusBarInset;
+      if (total > HOME_COLLAPSED_HEADER_HEIGHT + statusBarInset) {
         expandedHeaderHeight.value = total;
       }
     },

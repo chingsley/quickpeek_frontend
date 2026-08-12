@@ -249,12 +249,12 @@ export const useChatsScrollChrome = () => {
   );
 
   const onHeaderLayout = useCallback(
-    (slideHeight: number) => {
+    (slideHeight: number, statusBarInset: number) => {
       // The measured wrap holds only the sliding content (title/search/
       // filters); the shell's expanded height additionally spans the toolbar
       // band at the top that the pinned strip overlays.
-      const total = slideHeight + CHATS_COLLAPSED_HEADER_HEIGHT;
-      if (total > CHATS_COLLAPSED_HEADER_HEIGHT) {
+      const total = slideHeight + CHATS_COLLAPSED_HEADER_HEIGHT + statusBarInset;
+      if (total > CHATS_COLLAPSED_HEADER_HEIGHT + statusBarInset) {
         chatsExpandedHeaderHeight.value = total;
       }
     },

@@ -12,6 +12,7 @@ export const fonts = {
   FONT_SIZE_TABLET: 18,
   FONT_SIZE_MEDIUM: 19,
   FONT_SIZE_XL: 23,
+  FONT_SIZE_XL2: 24,
   /** Primary screen heading (Home, Chats, Ask, etc.). */
   FONT_SIZE_SCREEN_TITLE: 33,
   /** Home filter tablet labels — between body small and section medium. */
