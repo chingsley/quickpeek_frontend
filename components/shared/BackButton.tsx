@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     height: CIRCULAR_CLICK_HEIGHT,
     width: CIRCULAR_CLICK_WIDTH,
     borderWidth: 1,
-    backgroundColor: colors.BG_WHITE,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: CIRCULAR_CLICK_WIDTH / 2,
