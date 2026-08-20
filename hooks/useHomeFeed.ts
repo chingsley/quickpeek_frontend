@@ -80,6 +80,15 @@ export const useHomeFeed = (resetChrome: () => void) => {
       setFeedCounts(data.counts);
       hasLoadedFeedRef.current = true;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === 'Expected authenticated feed response'
+      ) {
+        // Stale JWT: optionalAuth treats invalid tokens as anonymous, so the feed
+        // returns a public shape while persisted storage still looks logged-in.
+        await useAuthStore.getState().logout();
+        return;
+      }
       console.error('Failed to load feed:', error);
     } finally {
       if (!silent) {

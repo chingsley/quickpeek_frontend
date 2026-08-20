@@ -43,6 +43,7 @@
     "plugins": [
       "expo-router",
       "expo-notifications",
+      "expo-apple-authentication",
       [
         "@stripe/stripe-react-native",
         {
@@ -63,7 +64,8 @@
         {
           "locationWhenInUsePermission": "If you turn on location sharing, Quickpeek uses your location so nearby users can find you as a responder."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

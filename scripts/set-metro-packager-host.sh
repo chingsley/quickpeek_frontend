@@ -25,3 +25,8 @@ else
 fi
 
 echo "[device] Embedded Metro packager host: ${LOCAL_IP} (LAN mode)"
+
+# React Native reads ip.txt (not MetroPackagerHost) when guessing the packager host.
+IP_TXT="${SCRIPT_DIR}/../ios/quickpeek/ip.txt"
+printf '%s\n' "${LOCAL_IP}" > "${IP_TXT}"
+echo "[device] Wrote ${IP_TXT}"

@@ -15,6 +15,8 @@ export type TUser = {
   locationSharingEnabled: boolean;
   notificationsEnabled: boolean;
   isVerified?: boolean;
+  /** True only when an OAuth provider confirmed the email (server-set). */
+  emailVerified?: boolean;
   isAdmin?: boolean;
   location?: TLocation;
   asResponder?: TRoleRating;

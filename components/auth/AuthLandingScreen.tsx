@@ -5,10 +5,13 @@ import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
 import { images } from '@/constants/images';
 import { SCREEN_CHROME_HORIZONTAL_PADDING } from '@/constants/layout';
+import { useSocialAuth } from '@/hooks/useSocialAuth';
+import { OAuthProvider } from '@/services/auth.services';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   StyleSheet,
   Text,
@@ -17,13 +20,11 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type SocialProvider = 'google' | 'apple' | 'facebook';
-
 const WORDMARK_TEXT_SIZE = fonts.FONT_SIZE_SCREEN_TITLE;
 /** Tall “Q” cap height — sits above the rest of the word on a shared baseline. */
 const WORDMARK_LOGO_BADGE_SIZE = 52;
 
-const SOCIAL_PROVIDERS: { id: SocialProvider; icon: keyof typeof Ionicons.glyphMap; label: string; }[] = [
+const SOCIAL_PROVIDERS: { id: OAuthProvider; icon: keyof typeof Ionicons.glyphMap; label: string; }[] = [
   { id: 'google', icon: 'logo-google', label: 'Google' },
   { id: 'apple', icon: 'logo-apple', label: 'Apple' },
   { id: 'facebook', icon: 'logo-facebook', label: 'Facebook' },
@@ -32,14 +33,12 @@ const SOCIAL_PROVIDERS: { id: SocialProvider; icon: keyof typeof Ionicons.glyphM
 const AuthLandingScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { showActionSheet, actionSheet } = useActionSheet();
+  // The hook owns its own error-sheet state via useActionSheet internally;
+  // the landing screen renders the hook's `actionSheet` once at the root.
+  const { signInWith, activeProvider, actionSheet } = useSocialAuth();
 
-  const handleSocialPress = (provider: string) => {
-    showActionSheet({
-      title: `${provider} sign-in coming soon`,
-      message: 'Use email to sign in or create an account for now.',
-      tone: 'info',
-    });
+  const handleSocialPress = (provider: OAuthProvider) => {
+    void signInWith(provider);
   };
 
   return (
@@ -72,28 +71,39 @@ const AuthLandingScreen = () => {
           variant="outline"
           fullWidth
           noTopMargin
+          disabled={activeProvider !== null}
         />
 
         <Text style={styles.separator}>or sign in with</Text>
 
         <View style={styles.socialRow}>
-          {SOCIAL_PROVIDERS.map((provider) => (
-            <TouchableOpacity
-              key={provider.id}
-              style={styles.socialButton}
-              onPress={() => handleSocialPress(provider.label)}
-              accessibilityRole="button"
-              accessibilityLabel={`Sign in with ${provider.label}`}
-            >
-              <Ionicons name={provider.icon} size={22} color={colors.PRIMARY} />
-            </TouchableOpacity>
-          ))}
+          {SOCIAL_PROVIDERS.map((provider) => {
+            const isActive = activeProvider === provider.id;
+            return (
+              <TouchableOpacity
+                key={provider.id}
+                style={[styles.socialButton, isActive && styles.socialButtonActive]}
+                onPress={() => handleSocialPress(provider.id)}
+                disabled={activeProvider !== null}
+                accessibilityRole="button"
+                accessibilityLabel={`Sign in with ${provider.label}`}
+                accessibilityState={isActive ? { busy: true } : undefined}
+              >
+                {isActive ? (
+                  <ActivityIndicator size="small" color={colors.PRIMARY} />
+                ) : (
+                  <Ionicons name={provider.icon} size={22} color={colors.PRIMARY} />
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         <TouchableOpacity
           onPress={() => router.push('/(auth)/signup')}
           style={styles.signupRow}
           accessibilityRole="button"
+          disabled={activeProvider !== null}
         >
           <Text style={styles.signupPrompt}>
             Don&apos;t have an account? <Text style={styles.signupLink}>Sign up</Text>
@@ -205,6 +215,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.SECONDARY,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  socialButtonActive: {
+    opacity: 0.6,
   },
   signupRow: {
     alignItems: 'center',

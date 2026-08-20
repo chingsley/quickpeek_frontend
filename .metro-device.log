@@ -1,0 +1,23 @@
+env: load .env
+env: export EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID EXPO_PUBLIC_GOOGLE_IOS_REVERSED_CLIENT_ID
+Starting project at /Users/kingsleyeneja/study_projects/my-apps/quickpeek/quickpeek_frontend
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  expo@54.0.36 - expected version: ~54.0.37
+  expo-constants@18.0.13 - expected version: ~18.0.14
+  jest-expo@54.0.17 - expected version: ~54.0.18
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+iOS node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS node_modules/expo-router/entry.js ▓▓░░░░░░░░░░░░░░ 16.0% ( 46/145)
+iOS node_modules/expo-router/entry.js ▓▓▓▓▓░░░░░░░░░░░ 35.4% (362/634)
+iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 57.8% ( 847/1128)
+iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 68.6% (1304/1619)
+iOS node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 85.8% (1761/1979)
+iOS Bundled 19670ms node_modules/expo-router/entry.js (2207 modules)
+ WARN  Deep imports from the 'react-native' package are deprecated ('react-native/Libraries/NativeModules/specs/NativeSourceCode'). Source: /Users/kingsleyeneja/study_projects/my-apps/quickpeek/quickpeek_frontend/config/api.config.ts 84:6
+ LOG  [config] bundler host from deep link: 192.168.2.15
+ LOG  [config] API_URL: http://192.168.2.15:8081
+ LOG  [config] bundler host: localhost
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
