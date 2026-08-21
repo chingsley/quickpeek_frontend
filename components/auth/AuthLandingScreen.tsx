@@ -1,6 +1,5 @@
 import AuthLandingHeroArt from '@/components/auth/AuthLandingHeroArt';
 import CustomButton from '@/components/shared/CustomButton';
-import { useActionSheet } from '@/components/shared/useActionSheet';
 import { colors } from '@/constants/colors';
 import { fonts } from '@/constants/fonts';
 import { images } from '@/constants/images';
@@ -33,8 +32,6 @@ const SOCIAL_PROVIDERS: { id: OAuthProvider; icon: keyof typeof Ionicons.glyphMa
 const AuthLandingScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  // The hook owns its own error-sheet state via useActionSheet internally;
-  // the landing screen renders the hook's `actionSheet` once at the root.
   const { signInWith, activeProvider, actionSheet } = useSocialAuth();
 
   const handleSocialPress = (provider: OAuthProvider) => {

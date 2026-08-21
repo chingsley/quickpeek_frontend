@@ -10,6 +10,9 @@ import * as Crypto from 'expo-crypto';
 import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'expo-router';
+
+WebBrowser.maybeCompleteAuthSession();
 
 /**
  * Social sign-in entrypoint used by the auth landing screen.
@@ -28,6 +31,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
  * All flows end the same way: POST /auth/oauth → `authStore.login(...)`.
  */
 export const useSocialAuth = () => {
+  const router = useRouter();
   const login = useAuthStore((s) => s.login);
   const { showActionSheet, actionSheet } = useActionSheet();
   const [activeProvider, setActiveProvider] = useState<OAuthProvider | null>(null);
@@ -186,6 +190,7 @@ export const useSocialAuth = () => {
         if (response?.data) {
           const { user, token } = response.data;
           await login(user.locationSharingEnabled, user, token);
+          router.replace('/(tabs)/Home');
         }
       } catch (err: any) {
         if (err?.type === 'dismiss' || err?.code === 'E_CANCELLED') {
@@ -222,7 +227,7 @@ export const useSocialAuth = () => {
         setActiveProvider(null);
       }
     },
-    [activeProvider, login, resolveProviderResult, showActionSheet],
+    [activeProvider, login, resolveProviderResult, router, showActionSheet],
   );
 
   return { signInWith, activeProvider, isLoading: activeProvider !== null, actionSheet };
@@ -357,6 +362,7 @@ const facebookWebFlow = async (input: {
   authUrl.searchParams.set('redirect_uri', input.redirectUri);
   authUrl.searchParams.set('response_type', 'token');
   authUrl.searchParams.set('scope', 'email');
+  authUrl.searchParams.set('display', 'touch');
   authUrl.searchParams.set('state', Crypto.randomUUID());
 
   const params = await input.openAuthSession(authUrl.toString());
