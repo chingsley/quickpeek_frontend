@@ -16,7 +16,8 @@
         "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_OabyBG2gYCq8Jzsl6w5lGP6D00rOY6SjS1",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "976227150731-t8kt09jmh99kjgt9iuk3frgt29ftstak.apps.googleusercontent.com",
         "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "976227150731-gpr649mn8l26i5mgrkdgm768t9d0r8nt.apps.googleusercontent.com",
-        "EXPO_PUBLIC_GOOGLE_IOS_REVERSED_CLIENT_ID": "com.googleusercontent.apps.976227150731-gpr649mn8l26i5mgrkdgm768t9d0r8nt"
+        "EXPO_PUBLIC_GOOGLE_IOS_REVERSED_CLIENT_ID": "com.googleusercontent.apps.976227150731-gpr649mn8l26i5mgrkdgm768t9d0r8nt",
+        "EXPO_PUBLIC_FACEBOOK_APP_ID": "671279131936065"
       }
     },
     "production": {

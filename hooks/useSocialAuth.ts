@@ -228,9 +228,14 @@ export const useSocialAuth = () => {
             tone: 'error',
           });
         } else if (!err?.response) {
+          const localMessage = typeof err?.message === 'string' ? err.message.trim() : '';
+          const isNetworkError =
+            !localMessage || localMessage === 'Network Error' || localMessage === 'Network request failed';
           showActionSheet({
-            title: 'Connection problem',
-            message: 'Could not reach QuickPeek. Check your connection and try again.',
+            title: isNetworkError ? 'Connection problem' : 'Sign-in failed',
+            message: isNetworkError
+              ? 'Could not reach QuickPeek. Check your connection and try again.'
+              : localMessage,
             tone: 'error',
           });
         } else {
