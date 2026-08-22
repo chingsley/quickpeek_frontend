@@ -26,7 +26,7 @@ WebBrowser.maybeCompleteAuthSession();
  *                Android OAuth client exists).
  *  - Apple     → native iOS SDK via `expo-apple-authentication` on iOS;
  *                web-redirect flow with the Apple Services ID on Android/web.
- *  - Facebook  → web-redirect OAuth on every platform.
+ *  - Facebook  → browser OAuth; native iOS uses fb{APP_ID}://authorize redirect.
  *
  * All flows end the same way: POST /auth/oauth → `authStore.login(...)`.
  */
@@ -40,11 +40,21 @@ export const useSocialAuth = () => {
   const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID?.trim();
   const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID?.trim();
   const googleReversedClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_REVERSED_CLIENT_ID?.trim();
+  const facebookAppId = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID?.trim();
 
   const redirectUri = makeRedirectUri({
     scheme: 'quickpeekfrontend',
     path: 'oauthredirect',
   });
+
+  // Facebook mobile OAuth must use Meta's fb{APP_ID}://authorize redirect — not
+  // quickpeekfrontend://. The Valid OAuth Redirect URIs validator rejects custom schemes.
+  const facebookRedirectUri = useMemo(() => {
+    if (Platform.OS === 'web' || !facebookAppId) {
+      return redirectUri;
+    }
+    return `fb${facebookAppId}://authorize`;
+  }, [facebookAppId, redirectUri]);
 
   const googleRedirectOptions = useMemo(
     () => ({
@@ -71,8 +81,11 @@ export const useSocialAuth = () => {
   );
 
   const openAuthSession = useCallback(
-    async (authUrl: string): Promise<Record<string, string> | null> => {
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
+    async (
+      authUrl: string,
+      sessionRedirectUri: string,
+    ): Promise<Record<string, string> | null> => {
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, sessionRedirectUri);
       if (result.type !== 'success') return null;
       const url = new URL(result.url);
       const params: Record<string, string> = {};
@@ -87,7 +100,7 @@ export const useSocialAuth = () => {
       }
       return params;
     },
-    [redirectUri],
+    [],
   );
 
   const resolveProviderResult = useCallback(
@@ -141,12 +154,13 @@ export const useSocialAuth = () => {
         }));
       }
 
-      return facebookWebFlow({ redirectUri, openAuthSession }).then((tokens) => ({
+      return facebookWebFlow({ redirectUri: facebookRedirectUri, openAuthSession }).then((tokens) => ({
         accessToken: tokens.accessToken,
         nonce: rawNonce,
       }));
     },
     [
+      facebookRedirectUri,
       googlePromptAsync,
       googleRequest,
       iosClientId,
@@ -235,7 +249,10 @@ export const useSocialAuth = () => {
 
 // ─── Provider flow primitives ───────────────────────────────────────────────
 
-type OpenAuthSession = (authUrl: string) => Promise<Record<string, string> | null>;
+type OpenAuthSession = (
+  authUrl: string,
+  sessionRedirectUri: string,
+) => Promise<Record<string, string> | null>;
 type GooglePromptAsync = ReturnType<typeof Google.useAuthRequest>[2];
 
 interface GoogleWebResult {
@@ -259,7 +276,7 @@ const googleWebFlow = async (input: {
   authUrl.searchParams.set('scope', 'openid profile email');
   authUrl.searchParams.set('nonce', input.hashedNonce);
 
-  const params = await input.openAuthSession(authUrl.toString());
+  const params = await input.openAuthSession(authUrl.toString(), input.redirectUri);
   if (!params) return {};
   return { idToken: params.id_token };
 };
@@ -340,7 +357,7 @@ const appleWebFlow = async (input: {
   authUrl.searchParams.set('nonce', input.hashedNonce);
   authUrl.searchParams.set('state', Crypto.randomUUID());
 
-  const params = await input.openAuthSession(authUrl.toString());
+  const params = await input.openAuthSession(authUrl.toString(), input.redirectUri);
   if (!params) return {};
   return { idToken: params.id_token };
 };
@@ -365,7 +382,7 @@ const facebookWebFlow = async (input: {
   authUrl.searchParams.set('display', 'touch');
   authUrl.searchParams.set('state', Crypto.randomUUID());
 
-  const params = await input.openAuthSession(authUrl.toString());
+  const params = await input.openAuthSession(authUrl.toString(), input.redirectUri);
   if (!params) return {};
   return { accessToken: params.access_token };
 };
